@@ -4,4 +4,5 @@ public interface ICommand {
     void diff();
     void addAll();
     void commitAll(String arg);
+    void squashCommits(int squashCount, String newCommitName);
 }

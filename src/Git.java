@@ -43,4 +43,18 @@ public class Git implements ICommand {
     public void commitAll(String arg) {
         this.execute(new String[]{"git", "commit", "-am", arg});
     }
+
+    @Override
+    public void squashCommits(int squashCount, String newCommitName) {
+        try {
+            // Reset to the commit before the range you want to squash
+            this.execute(new String[]{"git", "reset", "--soft", "HEAD~" + squashCount});
+            // Commit the changes with the message of the first commit in the range
+            this.execute(new String[]{"git", "commit", "-m", newCommitName}); // You might want to retrieve the original message
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Handle potential errors
+        }
+    }
 }
