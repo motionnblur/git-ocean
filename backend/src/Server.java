@@ -9,7 +9,7 @@ import java.net.Socket;
 public class Server {
     int port = 65432;
 
-    public Server() {
+    public Server(Git git) {
         try (ServerSocket serverSocket = new ServerSocket(port, 50, InetAddress.getByName("127.0.0.1"))) {
             // Bind only to localhost (127.0.0.1) for local-only access
             System.out.println("Server listening on 127.0.0.1:" + port);
@@ -29,14 +29,8 @@ public class Server {
                         String line;
                         // Read lines until the client disconnects (readLine returns null)
                         while ((line = reader.readLine()) != null) {
-                            System.out.println("Received from client: " + line);
-
-                            // Process the message (simple example: add a prefix)
-                            String response = "Java processed: " + line;
-
-                            // Send the response back to the client (println adds newline)
-                            writer.println(response);
-                            System.out.println("Sent response: " + response);
+                            String result = processGitCommand(line, git, writer);
+                            writer.println(result);
                         }
                     } catch (IOException e) {
                         System.err.println("Communication error with client: " + e.getMessage());
@@ -57,6 +51,25 @@ public class Server {
         } catch (SecurityException e) {
             System.err.println("Security exception preventing listening on port " + port + ": " + e.getMessage());
             System.exit(1);
+        }
+    }
+
+    public String processGitCommand(String requestString, Git git, PrintWriter writer) {
+        try {
+            ECommands command = ECommands.fromString(requestString);
+            return switch (command) {
+                case EXECUTE -> git.execute(new String[]{"git", "status"});
+                case STATUS -> git.status();
+                case DIFF -> git.diff();
+                case ADD_ALL -> git.addAll();
+                case COMMIT_ALL -> git.commitAll(requestString);
+                case DROP_LAST_COMMIT -> git.dropLastCommit();
+                case SQUASH_COMMITS -> git.squashCommits(Integer.parseInt(requestString), requestString);
+            };
+        } catch (IllegalArgumentException e) {
+            //System.err.println(e.getMessage());
+            writer.println("Invalid command: " + requestString);
+            return null;
         }
     }
 }

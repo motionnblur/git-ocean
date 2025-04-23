@@ -8,9 +8,7 @@ import java.net.Socket;
 
 public class Main {
     public static void main(String[] args) {
-        //Git git = new Git();
-        //git.dropLastCommit();
-
-        Server server = new Server();
+        Git git = new Git();
+        Server server = new Server(git);
     }
 }

@@ -1,9 +1,9 @@
 public interface ICommand {
-    void execute(String[] args);
-    void status();
-    void diff();
-    void addAll();
-    void commitAll(String arg);
-    void squashCommits(int squashCount, String newCommitName);
-    void dropLastCommit();
+    String execute(String[] args);
+    String status();
+    String diff();
+    String addAll();
+    String commitAll(String arg);
+    String squashCommits(int squashCount, String newCommitName);
+    String dropLastCommit();
 }

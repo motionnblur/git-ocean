@@ -3,7 +3,8 @@ import java.io.InputStreamReader;
 
 public class Git implements ICommand {
     @Override
-    public void execute(String[] args) {
+    public String execute(String[] args) {
+        StringBuilder result = new StringBuilder();
         try {
             ProcessBuilder builder = new ProcessBuilder(args);
             builder.redirectErrorStream(true);
@@ -13,57 +14,63 @@ public class Git implements ICommand {
                     new InputStreamReader(process.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
+                    result.append(line).append("\n");
                 }
             }
 
             int exitCode = process.waitFor();
-            System.out.println("Exited with code: " + exitCode);
+            result.append("Exited with code: ").append(exitCode);
+
         } catch (Exception e) {
             e.printStackTrace();
+            result.append(e.getMessage());
         }
+
+        return result.toString();
     }
 
     @Override
-    public void status() {
-        this.execute(new String[]{"git", "status"});
+    public String status() {
+        return this.execute(new String[]{"git", "status"});
     }
 
     @Override
-    public void diff() {
-        this.execute(new String[]{"git", "diff"});
+    public String diff() {
+        return this.execute(new String[]{"git", "diff"});
     }
 
     @Override
-    public void addAll() {
-        this.execute(new String[]{"git", "add", "."});
+    public String addAll() {
+        return this.execute(new String[]{"git", "add", "."});
     }
 
     @Override
-    public void commitAll(String arg) {
-        this.execute(new String[]{"git", "commit", "-am", arg});
+    public String commitAll(String arg) {
+        return this.execute(new String[]{"git", "commit", "-am", arg});
     }
 
     @Override
-    public void squashCommits(int squashCount, String newCommitName) {
+    public String squashCommits(int squashCount, String newCommitName) {
         try {
             // Reset to the commit before the range you want to squash
             this.execute(new String[]{"git", "reset", "--soft", "HEAD~" + squashCount});
             // Commit the changes with the message of the first commit in the range
-            this.execute(new String[]{"git", "commit", "-m", newCommitName}); // You might want to retrieve the original message
+            return this.execute(new String[]{"git", "commit", "-m", newCommitName}); // You might want to retrieve the original message
 
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
             // Handle potential errors
         }
     }
 
     @Override
-    public void dropLastCommit() {
+    public String dropLastCommit() {
         try {
-            this.execute(new String[]{"git", "reset", "--hard", "HEAD^"});
+            return this.execute(new String[]{"git", "reset", "--hard", "HEAD^"});
         } catch (Exception e) {
             e.printStackTrace();
+            return null;
         }
     }
 }
