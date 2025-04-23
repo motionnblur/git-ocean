@@ -21,12 +21,9 @@ class SimpleClientGUI:
         self.input_frame = tk.Frame(root)
         self.input_frame.pack(pady=10, padx=10, fill=tk.X)
 
-        self.message_label = tk.Label(self.input_frame, text="Message:")
-        self.message_label.pack(side=tk.LEFT, padx=5)
-
-        self.message_entry = tk.Entry(self.input_frame, width=30)
+        self.message_entry = tk.Text(self.input_frame, width=30, height=10)
         self.message_entry.pack(side=tk.LEFT, expand=True, fill=tk.X, padx=5)
-        self.message_entry.bind("<Return>", self.send_message_event) # Allow sending with Enter key
+        #self.message_entry.bind("<Return>", self.send_message_event) # Allow sending with Enter key
 
         self.send_button = tk.Button(self.input_frame, text="Send", command=self.send_message_event)
         self.send_button.pack(side=tk.LEFT, padx=5)
@@ -56,7 +53,7 @@ class SimpleClientGUI:
 
     def send_message_event(self, event=None): # event=None allows calling without event object
         """Gets message from entry and starts the network thread."""
-        message = self.message_entry.get()
+        message = self.message_entry.get("1.0", tk.END).strip()
         if not message:
             self.update_status("Cannot send empty message.")
             return

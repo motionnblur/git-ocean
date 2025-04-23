@@ -5,7 +5,8 @@ public enum ECommands {
     ADD_ALL,
     COMMIT_ALL,
     DROP_LAST_COMMIT,
-    SQUASH_COMMITS;
+    SQUASH_COMMITS,
+    AMEND;
 
     public static ECommands fromString(String command) {
         try {

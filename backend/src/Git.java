@@ -73,4 +73,14 @@ public class Git implements ICommand {
             return null;
         }
     }
+
+    @Override
+    public String amendCommit(String newCommitName) {
+        try {
+            return this.execute(new String[]{"git", "commit", "--amend", "-m", newCommitName});
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 }

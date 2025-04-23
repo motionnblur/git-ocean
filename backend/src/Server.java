@@ -1,3 +1,6 @@
+import com.fasterxml.jackson.databind.ObjectMapper;
+import command_dtos.Command;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -29,7 +32,9 @@ public class Server {
                         String line;
                         // Read lines until the client disconnects (readLine returns null)
                         while ((line = reader.readLine()) != null) {
-                            String result = processGitCommand(line, git, writer);
+                            ObjectMapper mapper = new ObjectMapper();
+                            Command command = mapper.readValue(line, Command.class);
+                            String result = git.amendCommit(command.args.get(0));
                             writer.println(result);
                         }
                     } catch (IOException e) {
@@ -65,6 +70,7 @@ public class Server {
                 case COMMIT_ALL -> git.commitAll(requestString);
                 case DROP_LAST_COMMIT -> git.dropLastCommit();
                 case SQUASH_COMMITS -> git.squashCommits(Integer.parseInt(requestString), requestString);
+                case AMEND -> git.amendCommit(requestString);
             };
         } catch (IllegalArgumentException e) {
             //System.err.println(e.getMessage());

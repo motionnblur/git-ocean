@@ -6,4 +6,5 @@ public interface ICommand {
     String commitAll(String arg);
     String squashCommits(int squashCount, String newCommitName);
     String dropLastCommit();
+    String amendCommit(String newCommitName);
 }
