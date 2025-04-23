@@ -1,7 +1,14 @@
 import { AppBar, IconButton, Toolbar } from '@mui/material'
 import FolderIcon from '@mui/icons-material/Folder'
+import { useState } from 'react'
+import StartupDialog from './components/StartupDialog'
 
 function App(): React.JSX.Element {
+  const [open, setOpen] = useState<boolean>(true)
+  const handleClose = (): void => {
+    setOpen(false)
+  }
+
   return (
     <>
       <div style={{ width: '100%' }}>
@@ -13,6 +20,7 @@ function App(): React.JSX.Element {
           </Toolbar>
         </AppBar>
       </div>
+      <StartupDialog open={open} onClose={handleClose} />
     </>
   )
 }
