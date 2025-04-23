@@ -5,4 +5,5 @@ public interface ICommand {
     void addAll();
     void commitAll(String arg);
     void squashCommits(int squashCount, String newCommitName);
+    void dropLastCommit();
 }

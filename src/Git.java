@@ -57,4 +57,13 @@ public class Git implements ICommand {
             // Handle potential errors
         }
     }
+
+    @Override
+    public void dropLastCommit() {
+        try {
+            this.execute(new String[]{"git", "reset", "--hard", "HEAD^"});
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
