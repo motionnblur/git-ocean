@@ -1,9 +1,18 @@
-import { Button } from '@mui/material'
+import { AppBar, IconButton, Toolbar } from '@mui/material'
+import FolderIcon from '@mui/icons-material/Folder'
 
 function App(): React.JSX.Element {
   return (
     <>
-      <Button variant="text">Hello</Button>
+      <div style={{ width: '100%' }}>
+        <AppBar position="static">
+          <Toolbar variant="dense">
+            <IconButton edge="start" color="inherit" aria-label="menu" sx={{ mr: 2 }}>
+              <FolderIcon />
+            </IconButton>
+          </Toolbar>
+        </AppBar>
+      </div>
     </>
   )
 }
