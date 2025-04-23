@@ -34,7 +34,7 @@ public class Server {
                         while ((line = reader.readLine()) != null) {
                             ObjectMapper mapper = new ObjectMapper();
                             Command command = mapper.readValue(line, Command.class);
-                            String result = git.amendCommit(command.args.get(0));
+                            String result = processGitCommand(command.command, command.args.toArray(new String[0]), git, writer);
                             writer.println(result);
                         }
                     } catch (IOException e) {
@@ -59,22 +59,22 @@ public class Server {
         }
     }
 
-    public String processGitCommand(String requestString, Git git, PrintWriter writer) {
+    public String processGitCommand(String commandName, String[] args, Git git, PrintWriter writer) {
         try {
-            ECommands command = ECommands.fromString(requestString);
+            ECommands command = ECommands.fromString(commandName);
             return switch (command) {
                 case EXECUTE -> git.execute(new String[]{"git", "status"});
                 case STATUS -> git.status();
                 case DIFF -> git.diff();
                 case ADD_ALL -> git.addAll();
-                case COMMIT_ALL -> git.commitAll(requestString);
+                case COMMIT_ALL -> git.commitAll(args[0]);
                 case DROP_LAST_COMMIT -> git.dropLastCommit();
-                case SQUASH_COMMITS -> git.squashCommits(Integer.parseInt(requestString), requestString);
-                case AMEND -> git.amendCommit(requestString);
+                case SQUASH_COMMITS -> git.squashCommits(Integer.parseInt(args[0]), args[1]); //test
+                case AMEND -> git.amendCommit(args[0]);
             };
         } catch (IllegalArgumentException e) {
             //System.err.println(e.getMessage());
-            writer.println("Invalid command: " + requestString);
+            writer.println("Invalid command: " + commandName);
             return null;
         }
     }
