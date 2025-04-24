@@ -2,9 +2,11 @@ import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
-import { exec } from 'child_process'
+import { exec, spawn } from 'child_process'
 import util from 'util'
 import { memory } from '../classes/Memory'
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const os = require('os')
 const execPromise = util.promisify(exec)
 
 function createWindow(): void {
@@ -105,5 +107,46 @@ const eventReceiver = (): void => {
     } catch (error) {
       return false
     }
+  })
+  ipcMain.on('execute-command', (event, command) => {
+    if (!command || typeof command !== 'string') {
+      event.sender.send('command-output', 'Error: Invalid command received.')
+      event.sender.send('command-exit', 1) // Signal error exit code
+      return
+    }
+
+    console.log(`Executing command: ${command}`) // Log in main process console
+
+    // Determine shell and arguments based on OS
+    const isWindows = process.platform === 'win32'
+    const shell = isWindows ? 'cmd.exe' : '/bin/sh' // Or use 'bash', 'zsh' etc. if known
+    const args = isWindows ? ['/c', command] : ['-c', command]
+
+    // Spawn the command in the system's shell
+    // Use user's home directory as default working directory
+    const child = spawn(shell, args, { cwd: os.homedir(), stdio: 'pipe' })
+
+    // Stream stdout back to the renderer
+    child.stdout.on('data', (data) => {
+      event.sender.send('command-output', data.toString())
+    })
+
+    // Stream stderr back to the renderer
+    child.stderr.on('data', (data) => {
+      // Prefix stderr output for clarity in the console (optional)
+      event.sender.send('command-output', `stderr: ${data.toString()}`)
+    })
+
+    // Handle errors during spawning (e.g., command not found)
+    child.on('error', (error) => {
+      event.sender.send('command-output', `Spawn Error: ${error.message}`)
+      event.sender.send('command-exit', 1) // Signal error exit code
+    })
+
+    // Signal when the command finishes
+    child.on('close', (code) => {
+      console.log(`Command exited with code: ${code}`)
+      event.sender.send('command-exit', code)
+    })
   })
 }
