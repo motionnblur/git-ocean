@@ -1,16 +1,20 @@
 import { Box, Stack } from '@mui/material'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import MenuBar from './components/MenuBar/MenuBar'
 import Popup from './components/Popup'
 import ToolBar from './components/ToolBar'
 import MainWindow from './components/MainWindow/MainWindow'
 import BottomBar from './components/BottomBar'
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+import { fileService } from '@renderer/services/FileService'
 
 function App(): React.JSX.Element {
   const [open, setOpen] = useState<boolean>(true)
   const handleClose = (): void => {
     setOpen(false)
   }
+
+  useEffect(() => {}, [fileService])
 
   return (
     <>
