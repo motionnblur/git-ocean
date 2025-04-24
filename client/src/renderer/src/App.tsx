@@ -2,6 +2,7 @@ import { Stack } from '@mui/material'
 import { useState } from 'react'
 import MenuBar from './components/MenuBar'
 import Popup from './components/Popup'
+import ToolBar from './components/ToolBar'
 
 function App(): React.JSX.Element {
   const [open, setOpen] = useState<boolean>(true)
@@ -13,6 +14,7 @@ function App(): React.JSX.Element {
     <>
       <Stack direction="column">
         <MenuBar />
+        <ToolBar />
       </Stack>
       <Popup
         open={open}
