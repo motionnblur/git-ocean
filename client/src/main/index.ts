@@ -4,6 +4,7 @@ import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
 import { exec } from 'child_process'
 import util from 'util'
+import { memory } from '../classes/Memory'
 const execPromise = util.promisify(exec)
 
 function createWindow(): void {
@@ -55,10 +56,14 @@ app.whenReady().then(() => {
   // IPC test
   ipcMain.on('ping', () => console.log('pong'))
   ipcMain.handle('select-folder', async () => {
+    if (memory.isFileDialogOpen) return null
+    memory.isFileDialogOpen = true
+
     const result = await dialog.showOpenDialog({
       properties: ['openDirectory']
     })
 
+    memory.isFileDialogOpen = false
     if (result.canceled || result.filePaths.length === 0) {
       return null
     }
