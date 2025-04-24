@@ -1,12 +1,16 @@
 import { Dialog, DialogContent, DialogContentText, DialogTitle } from '@mui/material'
 import { JSX } from 'react'
 
-export default function StartupDialog({
+export default function Popup({
   open,
-  onClose
+  onClose,
+  title,
+  dialogText
 }: {
   open: boolean
   onClose: () => void
+  title: string
+  dialogText: string
 }): JSX.Element {
   return (
     <Dialog
@@ -15,11 +19,9 @@ export default function StartupDialog({
       aria-labelledby="alert-dialog-title"
       aria-describedby="alert-dialog-description"
     >
-      <DialogTitle id="alert-dialog-title">{'Welcome to Git Ocean !'}</DialogTitle>
+      <DialogTitle id="alert-dialog-title">{title}</DialogTitle>
       <DialogContent>
-        <DialogContentText id="alert-dialog-description">
-          To start, please select the folder you want to track
-        </DialogContentText>
+        <DialogContentText id="alert-dialog-description">{dialogText}</DialogContentText>
       </DialogContent>
     </Dialog>
   )

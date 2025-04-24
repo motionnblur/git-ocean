@@ -1,7 +1,7 @@
 import { Stack } from '@mui/material'
 import { useState } from 'react'
-import StartupDialog from './components/StartupDialog'
 import MenuBar from './components/MenuBar'
+import Popup from './components/Popup'
 
 function App(): React.JSX.Element {
   const [open, setOpen] = useState<boolean>(true)
@@ -14,7 +14,12 @@ function App(): React.JSX.Element {
       <Stack direction="column">
         <MenuBar />
       </Stack>
-      <StartupDialog open={open} onClose={handleClose} />
+      <Popup
+        open={open}
+        onClose={handleClose}
+        title="Welcome to Git Ocean !"
+        dialogText="To start, please select the folder you want to track"
+      />
     </>
   )
 }
