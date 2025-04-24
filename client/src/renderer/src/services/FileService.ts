@@ -13,6 +13,7 @@ export class FileService {
           this.gitFolderPath = folderPath
           eventManager.trigger('git-folder', folderPath)
         } else {
+          alert('This is NOT a Git repository.')
           console.warn('This is NOT a Git repository.')
         }
       } else {
