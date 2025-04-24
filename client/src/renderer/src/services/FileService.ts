@@ -1,17 +1,20 @@
 import { eventManager } from '@renderer/class/EventManager'
+const ipcRenderer = window.electron.ipcRenderer
 
 export class FileService {
-  openFileDialog = (): void => {
-    const input = document.createElement('input')
-    input.type = 'file'
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    input.onchange = (_) => {
-      if (input.files) {
-        const files = Array.from(input.files)
-        console.log(files)
+  gitFolderPath!: string
+  openFileDialog = async (): Promise<void> => {
+    try {
+      const folderPath = await ipcRenderer.invoke('select-folder')
+      if (folderPath) {
+        console.log('Selected folder:', folderPath)
+        this.gitFolderPath = folderPath
+      } else {
+        console.log('Folder selection cancelled.')
       }
+    } catch (error) {
+      console.error('Error selecting folder:', error)
     }
-    input.click()
   }
   constructor() {
     eventManager.on('open-file', this.openFileDialog)
