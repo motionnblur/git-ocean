@@ -28,7 +28,8 @@ export default function WindowCenter(): JSX.Element {
 
     // Optional cleanup
     return () => {
-      // You may want to implement "off" methods in preload for proper cleanup
+      window.electron.offCommandOutput(handleOutput)
+      window.electron.offCommandExit(handleExit)
     }
   }, [])
 
