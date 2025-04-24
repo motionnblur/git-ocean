@@ -1,6 +1,6 @@
 import { Box, Stack } from '@mui/material'
 import { useState } from 'react'
-import MenuBar from './components/MenuBar'
+import MenuBar from './components/MenuBar/MenuBar'
 import Popup from './components/Popup'
 import ToolBar from './components/ToolBar'
 import MainWindow from './components/MainWindow/MainWindow'
