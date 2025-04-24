@@ -11,6 +11,7 @@ export class FileService {
         const isGitRepo = await ipcRenderer.invoke('check-git-repo', folderPath)
         if (isGitRepo) {
           this.gitFolderPath = folderPath
+          eventManager.trigger('git-folder', folderPath)
         } else {
           console.warn('This is NOT a Git repository.')
         }
