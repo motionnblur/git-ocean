@@ -28,9 +28,10 @@ code {
 #root {
   display: flex;
   flex-direction: column;
-  margin-bottom: 80px;
   width: 100%;
   height: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 @media (max-width: 720px) {

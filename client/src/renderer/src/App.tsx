@@ -3,7 +3,7 @@ import { useState } from 'react'
 import MenuBar from './components/MenuBar'
 import Popup from './components/Popup'
 import ToolBar from './components/ToolBar'
-import MainWindow from './components/MainWindow'
+import MainWindow from './components/MainWindow/MainWindow'
 
 function App(): React.JSX.Element {
   const [open, setOpen] = useState<boolean>(true)
