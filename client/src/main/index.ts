@@ -2,6 +2,9 @@ import { app, shell, BrowserWindow, ipcMain, dialog } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import { exec } from 'child_process'
+import util from 'util'
+const execPromise = util.promisify(exec)
 
 function createWindow(): void {
   // Create the browser window.
@@ -61,6 +64,17 @@ app.whenReady().then(() => {
     }
 
     return result.filePaths[0]
+  })
+  ipcMain.handle('check-git-repo', async (_event, folderPath: string) => {
+    try {
+      const { stdout } = await execPromise('git rev-parse --is-inside-work-tree', {
+        cwd: folderPath
+      })
+      return stdout.trim() === 'true'
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (error) {
+      return false
+    }
   })
 
   createWindow()

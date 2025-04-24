@@ -8,7 +8,12 @@ export class FileService {
       const folderPath = await ipcRenderer.invoke('select-folder')
       if (folderPath) {
         console.log('Selected folder:', folderPath)
-        this.gitFolderPath = folderPath
+        const isGitRepo = await ipcRenderer.invoke('check-git-repo', folderPath)
+        if (isGitRepo) {
+          this.gitFolderPath = folderPath
+        } else {
+          console.warn('This is NOT a Git repository.')
+        }
       } else {
         console.log('Folder selection cancelled.')
       }
@@ -16,6 +21,7 @@ export class FileService {
       console.error('Error selecting folder:', error)
     }
   }
+
   constructor() {
     eventManager.on('open-file', this.openFileDialog)
   }
