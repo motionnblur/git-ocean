@@ -8,12 +8,12 @@ export default function MainWindow(): JSX.Element {
   return (
     <Box
       sx={{
-        width: '100vw',
-        height: '100vh',
+        width: '100%',
+        height: '100%',
         backgroundColor: '#222831'
       }}
     >
-      <Stack direction="row">
+      <Stack direction="row" width={'100%'} height={'100%'}>
         <WindowLeft />
         <WindowCenter />
         <WindowRight />
