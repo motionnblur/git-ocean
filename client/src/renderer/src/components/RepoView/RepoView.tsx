@@ -1,28 +1,40 @@
 import { Box, ListItem, ListItemButton, ListItemText } from '@mui/material'
-import { JSX } from 'react'
 import { FixedSizeList, ListChildComponentProps } from 'react-window'
 
-// eslint-disable-next-line @typescript-eslint/explicit-function-return-type
-function renderRow(props: ListChildComponentProps) {
-  const { index, style } = props
-
-  return (
-    <ListItem
-      style={style}
-      key={index}
-      component="div"
-      disablePadding
-      sx={{ backgroundColor: 'black' }}
-    >
-      <ListItemButton>
-        <ListItemText primary={`Item ${index + 1}`} />
-      </ListItemButton>
-    </ListItem>
-  )
+// Define a proper type for your repo items if you know it, otherwise keep it generic
+interface RepoItem {
+  commitData: string
+  commitName: string
+  authorData: string
+  dateData: string
 }
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-export default function RepoView({ _repoData }: { _repoData: any }): JSX.Element {
-  console.log(_repoData)
+
+interface RepoViewProps {
+  _repoData: RepoItem[]
+}
+
+// Function that returns a row renderer with access to _repoData
+function renderRow(_repoData: RepoItem[]) {
+  return function Row({ index, style }: ListChildComponentProps) {
+    const item = _repoData[index]
+
+    return (
+      <ListItem
+        style={style}
+        key={index}
+        component="div"
+        disablePadding
+        sx={{ backgroundColor: 'black' }}
+      >
+        <ListItemButton>
+          <ListItemText primary={`${item.commitName}`} />
+        </ListItemButton>
+      </ListItem>
+    )
+  }
+}
+
+export default function RepoView({ _repoData }: RepoViewProps): JSX.Element {
   return (
     <Box
       sx={{
@@ -41,7 +53,7 @@ export default function RepoView({ _repoData }: { _repoData: any }): JSX.Element
         itemCount={_repoData.length}
         overscanCount={5}
       >
-        {renderRow}
+        {renderRow(_repoData)}
       </FixedSizeList>
     </Box>
   )
