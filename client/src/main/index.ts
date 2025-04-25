@@ -5,9 +5,13 @@ import icon from '../../resources/icon.png?asset'
 import { exec, spawn } from 'child_process'
 import util from 'util'
 import { memory } from '../classes/Memory'
+import path from 'path'
+import fs from 'fs'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const os = require('os')
 const execPromise = util.promisify(exec)
+
+let currentWorkingDirectory = os.homedir()
 
 function createWindow(): void {
   // Create the browser window.
@@ -111,39 +115,71 @@ const eventReceiver = (): void => {
   ipcMain.on('execute-command', (event, command) => {
     if (!command || typeof command !== 'string') {
       event.sender.send('command-output', 'Error: Invalid command received.')
-      event.sender.send('command-exit', 1) // Signal error exit code
+      event.sender.send('command-exit', 1)
       return
     }
 
-    console.log(`Executing command: ${command}`) // Log in main process console
+    const args = command.split(' ')
+    const primaryCommand = args[0]
+    const commandArgs = args.slice(1)
 
-    // Determine shell and arguments based on OS
+    if (primaryCommand === 'cd') {
+      let targetDirectory: string | null = null
+      if (commandArgs.length > 0) {
+        targetDirectory = commandArgs[0]
+      }
+
+      let newWorkingDirectory: string
+
+      if (!targetDirectory) {
+        newWorkingDirectory = os.homedir()
+      } else if (targetDirectory === '..') {
+        newWorkingDirectory = path.dirname(currentWorkingDirectory)
+        if (newWorkingDirectory.length < path.parse(currentWorkingDirectory).root.length) {
+          newWorkingDirectory = path.parse(currentWorkingDirectory).root
+        }
+      } else {
+        newWorkingDirectory = path.resolve(currentWorkingDirectory, targetDirectory)
+
+        if (
+          !fs.existsSync(newWorkingDirectory) ||
+          !fs.statSync(newWorkingDirectory).isDirectory()
+        ) {
+          event.sender.send('command-output', `cd: no such file or directory: ${targetDirectory}`)
+          event.sender.send('command-exit', 1)
+          return
+        }
+      }
+
+      console.log(`CD command: Changing directory to ${newWorkingDirectory}`)
+      currentWorkingDirectory = newWorkingDirectory
+      event.sender.send('command-output', `Changed directory to ${currentWorkingDirectory}`)
+      event.sender.send('cwd-updated', currentWorkingDirectory)
+      event.sender.send('command-exit', 0)
+      return // Important: Exit here to prevent spawning a 'cd' process
+    }
+
+    // For other commands, proceed with spawning the child process
+    console.log(`Executing command: ${command} in directory: ${currentWorkingDirectory}`)
     const isWindows = process.platform === 'win32'
-    const shell = isWindows ? 'cmd.exe' : '/bin/sh' // Or use 'bash', 'zsh' etc. if known
-    const args = isWindows ? ['/c', command] : ['-c', command]
+    const shell = isWindows ? 'cmd.exe' : '/bin/sh'
+    const spawnArgs = isWindows ? ['/c', command] : ['-c', command]
 
-    // Spawn the command in the system's shell
-    // Use user's home directory as default working directory
-    const child = spawn(shell, args, { cwd: os.homedir(), stdio: 'pipe' })
+    const child = spawn(shell, spawnArgs, { cwd: currentWorkingDirectory, stdio: 'pipe' })
 
-    // Stream stdout back to the renderer
     child.stdout.on('data', (data) => {
       event.sender.send('command-output', data.toString())
     })
 
-    // Stream stderr back to the renderer
     child.stderr.on('data', (data) => {
-      // Prefix stderr output for clarity in the console (optional)
       event.sender.send('command-output', `stderr: ${data.toString()}`)
     })
 
-    // Handle errors during spawning (e.g., command not found)
     child.on('error', (error) => {
       event.sender.send('command-output', `Spawn Error: ${error.message}`)
-      event.sender.send('command-exit', 1) // Signal error exit code
+      event.sender.send('command-exit', 1)
     })
 
-    // Signal when the command finishes
     child.on('close', (code) => {
       console.log(`Command exited with code: ${code}`)
       event.sender.send('command-exit', code)

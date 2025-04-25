@@ -31,6 +31,16 @@ const customCommandAPI = {
     // Return a function to remove the listener (for cleanup)
     return () => ipcRenderer.removeListener('command-exit', subscription)
   },
+  onCwdUpdated: (callback: (newCwd: string) => void) => {
+    // Add this
+    if (typeof callback !== 'function') {
+      console.error('onCwdUpdated: Provided callback is not a function.')
+      return () => {}
+    }
+    const subscription = (_event, newCwd): void => callback(newCwd)
+    ipcRenderer.on('cwd-updated', subscription)
+    return () => ipcRenderer.removeListener('cwd-updated', subscription)
+  },
   systemInfo: {
     username: os.userInfo().username,
     hostname: os.hostname(),
@@ -58,13 +68,13 @@ if (process.contextIsolated) {
       ...electronAPI,
       ...customCommandAPI
     })
-    contextBridge.exposeInMainWorld('electron', {
+    /* contextBridge.exposeInMainWorld('electron', {
       ipcRenderer: {
         invoke: ipcRenderer.invoke.bind(ipcRenderer),
         send: ipcRenderer.send.bind(ipcRenderer),
         on: ipcRenderer.on.bind(ipcRenderer)
       }
-    })
+    }) */
     contextBridge.exposeInMainWorld('api', api)
   } catch (error) {
     console.error(error)

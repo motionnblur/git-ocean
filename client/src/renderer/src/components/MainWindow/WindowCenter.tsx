@@ -2,13 +2,13 @@ import { Box } from '@mui/material'
 import { JSX, useEffect, useState } from 'react'
 import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
 
-let userName: string
-let homeDir: string
+//let homeDir: string
 export default function WindowCenter(): JSX.Element {
   const [terminalLineData, setTerminalLineData] = useState([
     // eslint-disable-next-line react/jsx-key
     <TerminalOutput>Output test</TerminalOutput>
   ])
+  const [cwd, setCwd] = useState<string>(window.electron.systemInfo.cwd)
 
   useEffect(() => {
     const handleOutput = (data: string): void => {
@@ -24,12 +24,14 @@ export default function WindowCenter(): JSX.Element {
         <TerminalOutput key={prev.length}>{`Process exited with code ${code}`}</TerminalOutput>
       ])
     }
+    const handleCwdUpdated = (newCwd: string): void => {
+      setCwd(newCwd) // Update the cwd state when the event is received
+    }
 
     window.electron.onCommandOutput(handleOutput)
     window.electron.onCommandExit(handleExit)
-
-    userName = window.electron.systemInfo.username
-    homeDir = window.electron.systemInfo.homeDir
+    window.electron.onCwdUpdated(handleCwdUpdated)
+    //homeDir = window.electron.systemInfo.homeDir
   }, [])
 
   return (
@@ -44,7 +46,7 @@ export default function WindowCenter(): JSX.Element {
             window.electron.sendCommand(terminalInput)
           }
         }}
-        prompt={`${userName + '@' + homeDir + ':'}`}
+        prompt={`${cwd + ':'}`}
       >
         {terminalLineData}
       </Terminal>
