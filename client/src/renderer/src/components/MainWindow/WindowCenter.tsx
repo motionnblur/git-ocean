@@ -6,7 +6,7 @@ import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
 export default function WindowCenter(): JSX.Element {
   const [terminalLineData, setTerminalLineData] = useState([
     // eslint-disable-next-line react/jsx-key
-    <TerminalOutput>Output test</TerminalOutput>
+    <TerminalOutput>-- Git Ocean terminal --</TerminalOutput>
   ])
   const [cwd, setCwd] = useState<string>(window.electron.systemInfo.cwd)
 

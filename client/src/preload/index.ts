@@ -45,7 +45,7 @@ const customCommandAPI = {
     username: os.userInfo().username,
     hostname: os.hostname(),
     homeDir: os.homedir(),
-    cwd: process.cwd()
+    cwd: os.homedir()
   }
   // NOTE: The explicit exposure of raw ipcRenderer methods like:
   //   ipcRenderer: { invoke: ..., send: ..., on: ... }
