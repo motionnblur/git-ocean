@@ -20,7 +20,9 @@ function renderRow(props: ListChildComponentProps) {
     </ListItem>
   )
 }
-export default function RepoView(): JSX.Element {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export default function RepoView({ _repoData }: { _repoData: any }): JSX.Element {
+  console.log(_repoData)
   return (
     <Box
       sx={{
@@ -32,7 +34,13 @@ export default function RepoView(): JSX.Element {
         alignItems: 'center'
       }}
     >
-      <FixedSizeList height={400} width={360} itemSize={46} itemCount={200} overscanCount={5}>
+      <FixedSizeList
+        height={400}
+        width={360}
+        itemSize={46}
+        itemCount={_repoData.length}
+        overscanCount={5}
+      >
         {renderRow}
       </FixedSizeList>
     </Box>

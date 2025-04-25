@@ -27,7 +27,7 @@ export const eventReceiver = (data: any): void => {
         cwd: folderPath
       })
       const commitData = await getGitCommitData(execPromise)
-      console.log(commitData)
+      //console.log(commitData)
       _event.sender.send('repo-view-open', commitData)
       return stdout.trim() === 'true'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars

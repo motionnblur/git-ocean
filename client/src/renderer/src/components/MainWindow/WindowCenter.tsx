@@ -4,7 +4,8 @@ import { JSX, useEffect, useState } from 'react'
 import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
 import RepoView from '../RepoView/RepoView'
 
-//let homeDir: string
+// eslint-disable-next-line prettier/prettier, @typescript-eslint/no-explicit-any
+let _repoData: any
 export default function WindowCenter(): JSX.Element {
   const [terminalOpen, setTerminalOpen] = useState<boolean>(false)
   const [repoViewOpen, setRepoViewOpen] = useState<boolean>(false)
@@ -18,7 +19,8 @@ export default function WindowCenter(): JSX.Element {
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const handleRepoViewEvent = (repoData: any): void => {
-    console.log(repoData)
+    //console.log(repoData)
+    _repoData = repoData
     setRepoViewOpen((prev) => !prev)
   }
 
@@ -73,7 +75,7 @@ export default function WindowCenter(): JSX.Element {
           {terminalLineData}
         </Terminal>
       )}
-      {repoViewOpen && <RepoView />}
+      {repoViewOpen && <RepoView _repoData={_repoData} />}
     </Box>
   )
 }
