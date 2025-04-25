@@ -41,12 +41,13 @@ const customCommandAPI = {
     ipcRenderer.on('cwd-updated', subscription)
     return () => ipcRenderer.removeListener('cwd-updated', subscription)
   },
-  onRepoViewOpen: (callback: () => void) => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onRepoViewOpen: (callback: (data: any) => void) => {
     if (typeof callback !== 'function') {
       console.error('onRepoViewOpen: Provided callback is not a function.')
       return () => {}
     }
-    const subscription = (): void => callback()
+    const subscription = (_event, data): void => callback(data)
     ipcRenderer.on('repo-view-open', subscription)
     return () => ipcRenderer.removeListener('terminal-open', subscription)
   },

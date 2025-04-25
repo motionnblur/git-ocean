@@ -16,7 +16,9 @@ export default function WindowCenter(): JSX.Element {
   const openTerminalEvent = (): void => {
     setTerminalOpen((prev) => !prev)
   }
-  const handleRepoViewEvent = (): void => {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleRepoViewEvent = (repoData: any): void => {
+    console.log(repoData)
     setRepoViewOpen((prev) => !prev)
   }
 

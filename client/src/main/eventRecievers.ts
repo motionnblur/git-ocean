@@ -1,4 +1,5 @@
 import { memory } from '../classes/Memory'
+import { getGitCommitData } from './customEventFuncs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
@@ -25,7 +26,9 @@ export const eventReceiver = (data: any): void => {
       const { stdout } = await execPromise('git rev-parse --is-inside-work-tree', {
         cwd: folderPath
       })
-      _event.sender.send('repo-view-open')
+      const commitData = await getGitCommitData(execPromise)
+      console.log(commitData)
+      _event.sender.send('repo-view-open', commitData)
       return stdout.trim() === 'true'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
