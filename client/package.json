@@ -28,7 +28,7 @@
     "@fontsource/roboto": "^5.2.5",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
-    "react-terminal-ui": "^1.4.0"
+    "react-terminal-ui": "file:../../forks/react-terminal-ui"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
