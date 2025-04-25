@@ -1,6 +1,11 @@
 import { Box, TextField } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
-import { useEffect, useState } from 'react'
+import {
+  CommitData,
+  getSelectedGitCommitData,
+  setSelectedGitCommitData
+} from '@renderer/class/LocalMemory'
+import { JSX, useEffect, useState } from 'react'
 
 let textDisabled: boolean = true
 export default function CommitWindow(): JSX.Element {
@@ -9,6 +14,15 @@ export default function CommitWindow(): JSX.Element {
   const commitMessageHandler = (message: string): void => {
     textDisabled = false
     setValue(message)
+  }
+  const handleKeyDown = (event): void => {
+    if (event.key === 'Enter') {
+      const commitData: CommitData = getSelectedGitCommitData()
+      commitData.commitName = value
+      setSelectedGitCommitData(commitData)
+
+      window.electron.changeGitCommitName(getSelectedGitCommitData())
+    }
   }
 
   useEffect(() => {
@@ -34,7 +48,9 @@ export default function CommitWindow(): JSX.Element {
         rows={1}
         maxRows={1}
         defaultValue={value}
+        onChange={(event) => setValue(event.target.value)}
         disabled={textDisabled}
+        onKeyDown={handleKeyDown}
       />
     </Box>
   )

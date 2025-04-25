@@ -1,5 +1,7 @@
 export interface ICustomCommandAPI {
   sendCommand: (command: string) => void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  changeGitCommitName: (commitData: any) => void
   onCommandOutput: (callback: (data: string) => void) => () => void // Returns cleanup function
   onCommandExit: (callback: (code: number | null) => void) => () => void // Returns cleanup function
   onCommandExit: (callback: (code: number | null) => void) => () => void

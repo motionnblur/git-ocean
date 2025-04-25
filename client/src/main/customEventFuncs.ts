@@ -17,3 +17,14 @@ export const getGitCommitData = async (execPromise: any): Promise<any[]> => {
     dateData: dateDataArray[index]
   }))
 }
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const changeGitCommitName = async (
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  execPromise: any,
+  commitHash: string,
+  commitName: string
+): Promise<void> => {
+  console.log(commitHash, commitName)
+  await execPromise(`git commit --amend -m "${commitName}" `)
+}

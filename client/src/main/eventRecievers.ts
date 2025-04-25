@@ -1,5 +1,5 @@
 import { memory } from '../classes/Memory'
-import { getGitCommitData } from './customEventFuncs'
+import { changeGitCommitName, getGitCommitData } from './customEventFuncs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
@@ -107,5 +107,17 @@ export const eventReceiver = (data: any): void => {
       console.log(`Command exited with code: ${code}`)
       event.sender.send('command-exit', code)
     })
+  })
+
+  ipcMain.on('change-git-commit-name', async (event, data) => {
+    try {
+      await changeGitCommitName(execPromise, data.commitData, data.commitName)
+      // You can optionally send back a success message:
+      event.reply('change-git-commit-name-success', 'Commit message changed.')
+    } catch (err) {
+      console.error('Failed to change commit message:', err)
+      // Optionally notify the renderer process:
+      event.reply('change-git-commit-name-error', err.message || 'Unknown error')
+    }
   })
 }

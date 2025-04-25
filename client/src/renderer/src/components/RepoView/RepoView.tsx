@@ -1,6 +1,7 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
-import { useState } from 'react'
+import { setSelectedGitCommitData } from '@renderer/class/LocalMemory'
+import { JSX, useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
 export interface RepoItem {
@@ -14,6 +15,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
 
   const onItemClick = (index: number): void => {
+    setSelectedGitCommitData(_repoData[index])
     eventManager.trigger('commit-message', _repoData[index].commitName)
     setSelectedItemIndex(index)
   }
