@@ -1,7 +1,17 @@
-export interface memory {
+export interface IRepoItem {
+  name: string
+}
+export interface IRepo {
+  items: IRepoItem[]
+}
+export interface IMemory {
   isFileDialogOpen: boolean
+  repo: IRepo
 }
 
-export const memory: memory = {
-  isFileDialogOpen: false
+export const memory: IMemory = {
+  isFileDialogOpen: false,
+  repo: {
+    items: []
+  }
 }
