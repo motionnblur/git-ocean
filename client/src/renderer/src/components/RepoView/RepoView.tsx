@@ -7,7 +7,13 @@ function renderRow(props: ListChildComponentProps) {
   const { index, style } = props
 
   return (
-    <ListItem style={style} key={index} component="div" disablePadding>
+    <ListItem
+      style={style}
+      key={index}
+      component="div"
+      disablePadding
+      sx={{ backgroundColor: 'black' }}
+    >
       <ListItemButton>
         <ListItemText primary={`Item ${index + 1}`} />
       </ListItemButton>
