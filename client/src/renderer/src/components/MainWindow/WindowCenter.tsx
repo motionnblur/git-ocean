@@ -2,6 +2,8 @@ import { Box } from '@mui/material'
 import { JSX, useEffect, useState } from 'react'
 import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
 
+let userName: string
+let homeDir: string
 export default function WindowCenter(): JSX.Element {
   const [terminalLineData, setTerminalLineData] = useState([
     // eslint-disable-next-line react/jsx-key
@@ -26,6 +28,9 @@ export default function WindowCenter(): JSX.Element {
     window.electron.onCommandOutput(handleOutput)
     window.electron.onCommandExit(handleExit)
 
+    userName = window.electron.systemInfo.username
+    homeDir = window.electron.systemInfo.homeDir
+
     // Optional cleanup
     return () => {
       window.electron.offCommandOutput(handleOutput)
@@ -41,6 +46,7 @@ export default function WindowCenter(): JSX.Element {
         onInput={(terminalInput) => {
           window.electron.sendCommand(terminalInput)
         }}
+        prompt={`${userName + '@' + homeDir + ':'}`}
       >
         {terminalLineData}
       </Terminal>
