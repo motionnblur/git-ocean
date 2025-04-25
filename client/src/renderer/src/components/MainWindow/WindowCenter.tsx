@@ -30,12 +30,6 @@ export default function WindowCenter(): JSX.Element {
 
     userName = window.electron.systemInfo.username
     homeDir = window.electron.systemInfo.homeDir
-
-    // Optional cleanup
-    return () => {
-      window.electron.offCommandOutput(handleOutput)
-      window.electron.offCommandExit(handleExit)
-    }
   }, [])
 
   return (
@@ -44,7 +38,11 @@ export default function WindowCenter(): JSX.Element {
         name="Terminal"
         colorMode={ColorMode.Dark}
         onInput={(terminalInput) => {
-          window.electron.sendCommand(terminalInput)
+          if (terminalInput.toLocaleLowerCase() === 'clear') {
+            setTerminalLineData([])
+          } else {
+            window.electron.sendCommand(terminalInput)
+          }
         }}
         prompt={`${userName + '@' + homeDir + ':'}`}
       >

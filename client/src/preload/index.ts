@@ -18,9 +18,6 @@ const customCommandAPI = {
     // Return a function to remove the listener (for cleanup)
     return () => ipcRenderer.removeListener('command-output', subscription)
   },
-  offCommandOutput: (callback) => {
-    ipcRenderer.removeListener('command-output', callback)
-  },
 
   // Function to register a callback for receiving command exit code
   onCommandExit: (callback) => {
@@ -33,9 +30,6 @@ const customCommandAPI = {
     ipcRenderer.on('command-exit', subscription)
     // Return a function to remove the listener (for cleanup)
     return () => ipcRenderer.removeListener('command-exit', subscription)
-  },
-  offCommandExit: (callback) => {
-    ipcRenderer.removeListener('command-exit', callback)
   },
   systemInfo: {
     username: os.userInfo().username,
