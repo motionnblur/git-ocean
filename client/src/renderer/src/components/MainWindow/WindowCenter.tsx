@@ -24,10 +24,10 @@ export default function WindowCenter(): JSX.Element {
     }
 
     const handleExit = (code: number): void => {
-      setTerminalLineData((prev) => [
+      /* setTerminalLineData((prev) => [
         ...prev,
         <TerminalOutput key={prev.length}>{`Process exited with code ${code}`}</TerminalOutput>
-      ])
+      ]) */
     }
     const handleCwdUpdated = (newCwd: string): void => {
       setCwd(newCwd) // Update the cwd state when the event is received
