@@ -1,14 +1,19 @@
 import { Box } from '@mui/material'
+import { eventManager } from '@renderer/class/EventManager'
 import { JSX, useEffect, useState } from 'react'
 import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
 
 //let homeDir: string
 export default function WindowCenter(): JSX.Element {
+  const [terminalOpen, setTerminalOpen] = useState<boolean>(false)
   const [terminalLineData, setTerminalLineData] = useState([
     // eslint-disable-next-line react/jsx-key
     <TerminalOutput>-- Git Ocean terminal --</TerminalOutput>
   ])
   const [cwd, setCwd] = useState<string>(window.electron.systemInfo.cwd)
+  const openTerminalEvent = (): void => {
+    setTerminalOpen((prev) => !prev)
+  }
 
   useEffect(() => {
     const handleOutput = (data: string): void => {
@@ -32,24 +37,32 @@ export default function WindowCenter(): JSX.Element {
     window.electron.onCommandExit(handleExit)
     window.electron.onCwdUpdated(handleCwdUpdated)
     //homeDir = window.electron.systemInfo.homeDir
+
+    eventManager.on('open-terminal', openTerminalEvent)
+
+    return () => {
+      eventManager.off('open-terminal', openTerminalEvent)
+    }
   }, [])
 
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: '#dbd8e3' }}>
-      <Terminal
-        name="Terminal"
-        colorMode={ColorMode.Dark}
-        onInput={(terminalInput) => {
-          if (terminalInput.toLocaleLowerCase() === 'clear') {
-            setTerminalLineData([])
-          } else {
-            window.electron.sendCommand(terminalInput)
-          }
-        }}
-        prompt={`${cwd + ':'}`}
-      >
-        {terminalLineData}
-      </Terminal>
+      {terminalOpen && (
+        <Terminal
+          name="Terminal"
+          colorMode={ColorMode.Dark}
+          onInput={(terminalInput) => {
+            if (terminalInput.toLocaleLowerCase() === 'clear') {
+              setTerminalLineData([])
+            } else {
+              window.electron.sendCommand(terminalInput)
+            }
+          }}
+          prompt={`${cwd + ':'}`}
+        >
+          {terminalLineData}
+        </Terminal>
+      )}
     </Box>
   )
 }

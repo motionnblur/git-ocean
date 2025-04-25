@@ -3,6 +3,7 @@ import { JSX } from 'react'
 import FileUploadIcon from '@mui/icons-material/FileUpload'
 import FileDownloadIcon from '@mui/icons-material/FileDownload'
 import TerminalIcon from '@mui/icons-material/Terminal'
+import { eventManager } from '@renderer/class/EventManager'
 
 export default function ToolBar(): JSX.Element {
   return (
@@ -31,7 +32,14 @@ export default function ToolBar(): JSX.Element {
             <FileUploadIcon fontSize="medium" />
           </IconButton>
 
-          <IconButton edge="start" color="inherit" aria-label="menu">
+          <IconButton
+            edge="start"
+            color="inherit"
+            aria-label="menu"
+            onClick={() => {
+              eventManager.trigger('open-terminal')
+            }}
+          >
             <TerminalIcon fontSize="medium" />
           </IconButton>
         </Stack>
