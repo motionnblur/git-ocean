@@ -28,7 +28,9 @@
     "@fontsource/roboto": "^5.2.5",
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
-    "react-terminal-ui": "file:packages/terminal.tgz"
+    "@types/react-window": "^1.8.8",
+    "react-terminal-ui": "file:packages/terminal.tgz",
+    "react-window": "^1.8.11"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config-prettier": "^3.0.0",
