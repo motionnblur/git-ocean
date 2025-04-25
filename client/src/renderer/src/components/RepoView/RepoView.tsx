@@ -1,7 +1,8 @@
-import { Box, List, ListItem, ListItemText } from '@mui/material'
+import { Box, List } from '@mui/material'
+import CommitItem from './CommitItem'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
-interface RepoItem {
+export interface RepoItem {
   commitData: string
   commitName: string
   authorData: string
@@ -22,11 +23,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
     >
       <List sx={{ width: '360px', height: '400px', backgroundColor: 'black', overflow: 'auto' }}>
         {_repoData.map((item, index) => (
-          <ListItem key={index} disablePadding>
-            <div className="list-item">
-              <ListItemText sx={{ marginLeft: '10px' }} primary={`${item.commitName}`} />
-            </div>
-          </ListItem>
+          <CommitItem key={index} item={item} index={index} />
         ))}
       </List>
     </Box>
