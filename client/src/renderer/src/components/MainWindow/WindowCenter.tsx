@@ -2,6 +2,7 @@ import { Box } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import { JSX, useEffect, useState } from 'react'
 import Terminal, { ColorMode, TerminalOutput } from 'react-terminal-ui'
+import RepoView from '../RepoView/RepoView'
 
 //let homeDir: string
 export default function WindowCenter(): JSX.Element {
@@ -65,6 +66,7 @@ export default function WindowCenter(): JSX.Element {
           {terminalLineData}
         </Terminal>
       )}
+      <RepoView />
     </Box>
   )
 }
