@@ -1,4 +1,5 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
+import { eventManager } from '@renderer/class/EventManager'
 import { useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
@@ -11,6 +12,11 @@ export interface RepoItem {
 
 export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.Element {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
+
+  const onItemClick = (index: number): void => {
+    eventManager.trigger('commit-message', _repoData[index].commitName)
+    setSelectedItemIndex(index)
+  }
 
   return (
     <Box
@@ -28,7 +34,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
           <ListItem key={index} disablePadding>
             <div
               className={selectedItemIndex === index ? 'list-item-on' : 'list-item-off'}
-              onClick={() => setSelectedItemIndex(index)}
+              onClick={() => onItemClick(index)}
             >
               <ListItemText sx={{ marginLeft: '10px' }} primary={`${item.commitName}`} />
             </div>

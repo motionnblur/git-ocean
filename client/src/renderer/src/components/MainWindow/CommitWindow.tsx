@@ -1,8 +1,23 @@
 import { Box, TextField } from '@mui/material'
-import { useState } from 'react'
+import { eventManager } from '@renderer/class/EventManager'
+import { useEffect, useState } from 'react'
 
+let textDisabled: boolean = true
 export default function CommitWindow(): JSX.Element {
   const [value, setValue] = useState('')
+
+  const commitMessageHandler = (message: string): void => {
+    textDisabled = false
+    setValue(message)
+  }
+
+  useEffect(() => {
+    eventManager.on('commit-message', commitMessageHandler)
+    return () => {
+      eventManager.off('commit-message', commitMessageHandler)
+    }
+  }, [])
+
   return (
     <Box
       component="form"
@@ -12,13 +27,14 @@ export default function CommitWindow(): JSX.Element {
     >
       <TextField
         id="outlined-basic"
-        label="Commit Message"
+        hiddenLabel
         variant="filled"
         sx={{ backgroundColor: 'white' }}
         multiline
         rows={1}
         maxRows={1}
         defaultValue={value}
+        disabled={textDisabled}
       />
     </Box>
   )
