@@ -60,6 +60,7 @@ export default function WindowCenter(): JSX.Element {
           }}
           prompt={`${cwd + ':'}`}
           height="360px"
+          TopButtonsPanel={() => null}
         >
           {terminalLineData}
         </Terminal>
