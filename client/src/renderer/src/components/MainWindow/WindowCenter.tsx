@@ -7,6 +7,7 @@ import RepoView from '../RepoView/RepoView'
 //let homeDir: string
 export default function WindowCenter(): JSX.Element {
   const [terminalOpen, setTerminalOpen] = useState<boolean>(false)
+  const [repoViewOpen, setRepoViewOpen] = useState<boolean>(false)
   const [terminalLineData, setTerminalLineData] = useState([
     // eslint-disable-next-line react/jsx-key
     <TerminalOutput>-- Git Ocean terminal --</TerminalOutput>
@@ -14,6 +15,9 @@ export default function WindowCenter(): JSX.Element {
   const [cwd, setCwd] = useState<string>(window.electron.systemInfo.cwd)
   const openTerminalEvent = (): void => {
     setTerminalOpen((prev) => !prev)
+  }
+  const handleRepoViewEvent = (): void => {
+    setRepoViewOpen((prev) => !prev)
   }
 
   useEffect(() => {
@@ -37,6 +41,7 @@ export default function WindowCenter(): JSX.Element {
     window.electron.onCommandOutput(handleOutput)
     window.electron.onCommandExit(handleExit)
     window.electron.onCwdUpdated(handleCwdUpdated)
+    window.electron.onRepoViewOpen(handleRepoViewEvent)
     //homeDir = window.electron.systemInfo.homeDir
 
     eventManager.on('open-terminal', openTerminalEvent)
@@ -66,7 +71,7 @@ export default function WindowCenter(): JSX.Element {
           {terminalLineData}
         </Terminal>
       )}
-      <RepoView />
+      {repoViewOpen && <RepoView />}
     </Box>
   )
 }

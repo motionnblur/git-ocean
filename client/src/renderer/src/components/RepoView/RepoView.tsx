@@ -22,7 +22,16 @@ function renderRow(props: ListChildComponentProps) {
 }
 export default function RepoView(): JSX.Element {
   return (
-    <Box sx={{ width: '100%', height: '100%', backgroundColor: '#171130' }}>
+    <Box
+      sx={{
+        width: '100%',
+        height: '100%',
+        backgroundColor: '#171130',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
       <FixedSizeList height={400} width={360} itemSize={46} itemCount={200} overscanCount={5}>
         {renderRow}
       </FixedSizeList>

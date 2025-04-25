@@ -41,6 +41,15 @@ const customCommandAPI = {
     ipcRenderer.on('cwd-updated', subscription)
     return () => ipcRenderer.removeListener('cwd-updated', subscription)
   },
+  onRepoViewOpen: (callback: () => void) => {
+    if (typeof callback !== 'function') {
+      console.error('onRepoViewOpen: Provided callback is not a function.')
+      return () => {}
+    }
+    const subscription = (): void => callback()
+    ipcRenderer.on('repo-view-open', subscription)
+    return () => ipcRenderer.removeListener('terminal-open', subscription)
+  },
   systemInfo: {
     username: os.userInfo().username,
     hostname: os.hostname(),

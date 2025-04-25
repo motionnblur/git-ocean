@@ -106,6 +106,7 @@ const eventReceiver = (): void => {
       const { stdout } = await execPromise('git rev-parse --is-inside-work-tree', {
         cwd: folderPath
       })
+      _event.sender.send('repo-view-open')
       return stdout.trim() === 'true'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {
