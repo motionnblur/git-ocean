@@ -1,5 +1,4 @@
-import { Box, ListItem, ListItemButton, ListItemText } from '@mui/material'
-import { FixedSizeList, ListChildComponentProps } from 'react-window'
+import { Box, List, ListItem, ListItemText } from '@mui/material'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
 interface RepoItem {
@@ -9,32 +8,7 @@ interface RepoItem {
   dateData: string
 }
 
-interface RepoViewProps {
-  _repoData: RepoItem[]
-}
-
-// Function that returns a row renderer with access to _repoData
-function renderRow(_repoData: RepoItem[]) {
-  return function Row({ index, style }: ListChildComponentProps) {
-    const item = _repoData[index]
-
-    return (
-      <ListItem
-        style={style}
-        key={index}
-        component="div"
-        disablePadding
-        sx={{ backgroundColor: 'black' }}
-      >
-        <ListItemButton>
-          <ListItemText primary={`${item.commitName}`} />
-        </ListItemButton>
-      </ListItem>
-    )
-  }
-}
-
-export default function RepoView({ _repoData }: RepoViewProps): JSX.Element {
+export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.Element {
   return (
     <Box
       sx={{
@@ -46,15 +20,15 @@ export default function RepoView({ _repoData }: RepoViewProps): JSX.Element {
         alignItems: 'center'
       }}
     >
-      <FixedSizeList
-        height={400}
-        width={360}
-        itemSize={46}
-        itemCount={_repoData.length}
-        overscanCount={5}
-      >
-        {renderRow(_repoData)}
-      </FixedSizeList>
+      <List sx={{ width: '360px', height: '400px', backgroundColor: 'black', overflow: 'auto' }}>
+        {_repoData.map((item, index) => (
+          <ListItem key={index} disablePadding>
+            <div className="list-item">
+              <ListItemText sx={{ marginLeft: '10px' }} primary={`${item.commitName}`} />
+            </div>
+          </ListItem>
+        ))}
+      </List>
     </Box>
   )
 }
