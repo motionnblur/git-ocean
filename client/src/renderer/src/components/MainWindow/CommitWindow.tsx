@@ -45,6 +45,9 @@ export default function CommitWindow(): JSX.Element {
       setOpenSquashCommitsButton(false)
     }
   }
+  const squashCommitsHandler = (): void => {
+    window.electron.squashCommits(getSelectedGitCommitIndex())
+  }
 
   useEffect(() => {
     eventManager.on('commit-message', commitMessageHandler)
@@ -103,7 +106,7 @@ export default function CommitWindow(): JSX.Element {
             </Button>
           )}
           {openSquashCommitsButton && (
-            <Button variant="contained" color="success">
+            <Button variant="contained" color="success" onClick={squashCommitsHandler}>
               Squash Commits
             </Button>
           )}

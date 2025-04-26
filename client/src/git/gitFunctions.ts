@@ -108,6 +108,16 @@ export const dropLastCommit = async (execPromise: any): Promise<void> => {
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const squashCommits = async (execPromise: any, numberToSquash: number): Promise<void> => {
+  try {
+    await execPromise(`git reset --soft HEAD~${numberToSquash + 1}`)
+    await execPromise(`git commit -m "Squashed ${numberToSquash + 1} commits"`)
+  } catch (err) {
+    console.error('Failed to squash commits:', err)
+  }
+}
+
 // Helper function to wait for the rebase directory to be created
 const waitForRebaseDirectory = async (dirPath: string): Promise<void> => {
   console.log('Waiting for the rebase directory to appear...')

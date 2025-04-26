@@ -1,5 +1,10 @@
 import { memory } from '../../classes/Memory'
-import { changeGitCommitName, dropLastCommit, getGitCommitData } from '../../git/gitFunctions'
+import {
+  changeGitCommitName,
+  dropLastCommit,
+  getGitCommitData,
+  squashCommits
+} from '../../git/gitFunctions'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
@@ -131,6 +136,18 @@ export const eventReceiver = (data: any): void => {
       console.error('Failed to drop last commit:', err)
       // Optionally notify the renderer process:
       event.reply('remove-last-commit-error', err.message || 'Unknown error')
+    }
+  })
+
+  ipcMain.on('squash-commits', async (event, numberToSquash) => {
+    try {
+      await squashCommits(execPromise, numberToSquash)
+      // You can optionally send back a success message:
+      event.reply('squash-commits-success', 'Commits have been squashed.')
+    } catch (err) {
+      console.error('Failed to squash commits:', err)
+      // Optionally notify the renderer process:
+      event.reply('squash-commits-error', err.message || 'Unknown error')
     }
   })
 }
