@@ -8,7 +8,7 @@ import {
 import { JSX, useEffect, useState } from 'react'
 
 export default function CommitWindow(): JSX.Element {
-  const [value, setValue] = useState('')
+  const [value, setValue] = useState(getSelectedGitCommitData().commitName)
   const [openDropCommitButton, setOpenDropCommitButton] = useState(false)
 
   const commitMessageHandler = (message: string): void => {
@@ -69,7 +69,7 @@ export default function CommitWindow(): JSX.Element {
         multiline
         rows={1}
         maxRows={1}
-        defaultValue={value}
+        value={value}
         onChange={(event) => setValue(event.target.value)}
       />
 
