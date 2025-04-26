@@ -15,20 +15,20 @@ export default function CommitWindow(): JSX.Element {
     textDisabled = false
     setValue(message)
   }
-  const handleKeyDown = (event): void => {
-    if (event.key === 'Enter') {
-      const commitData: CommitData = getSelectedGitCommitData() // Get the current commit data
-      commitData.commitName = value
-      setSelectedGitCommitData(commitData)
+  const changeCommitMessageHandler = (): void => {
+    const commitData: CommitData = getSelectedGitCommitData() // Get the current commit data
+    commitData.commitName = value
+    setSelectedGitCommitData(commitData)
 
-      window.electron.changeGitCommitName(getSelectedGitCommitData())
-    }
+    window.electron.changeGitCommitName(getSelectedGitCommitData())
   }
 
   useEffect(() => {
     eventManager.on('commit-message', commitMessageHandler)
+    eventManager.on('change-commit-message', changeCommitMessageHandler)
     return () => {
       eventManager.off('commit-message', commitMessageHandler)
+      eventManager.off('change-commit-message', changeCommitMessageHandler)
     }
   }, [])
 
@@ -56,7 +56,6 @@ export default function CommitWindow(): JSX.Element {
         defaultValue={value}
         onChange={(event) => setValue(event.target.value)}
         disabled={textDisabled}
-        onKeyDown={handleKeyDown}
       />
 
       <Box
@@ -68,7 +67,9 @@ export default function CommitWindow(): JSX.Element {
           alignItems: 'center'
         }}
       >
-        <Button variant="contained">Update Message</Button>
+        <Button variant="contained" onClick={changeCommitMessageHandler}>
+          Update Message
+        </Button>
       </Box>
     </Box>
   )
