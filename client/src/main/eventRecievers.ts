@@ -1,5 +1,5 @@
 import { memory } from '../classes/Memory'
-import { changeGitCommitName, getGitCommitData } from './customEventFuncs'
+import { changeGitCommitName, getGitCommitData } from './gitFunctions'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
