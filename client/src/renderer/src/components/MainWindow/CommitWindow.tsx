@@ -7,12 +7,10 @@ import {
 } from '@renderer/class/LocalMemory'
 import { JSX, useEffect, useState } from 'react'
 
-let textDisabled: boolean = true
 export default function CommitWindow(): JSX.Element {
   const [value, setValue] = useState('')
 
   const commitMessageHandler = (message: string): void => {
-    textDisabled = false
     setValue(message)
   }
   const changeCommitMessageHandler = (): void => {
@@ -55,7 +53,6 @@ export default function CommitWindow(): JSX.Element {
         maxRows={1}
         defaultValue={value}
         onChange={(event) => setValue(event.target.value)}
-        disabled={textDisabled}
       />
 
       <Box
