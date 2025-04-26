@@ -1,7 +1,7 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import { setSelectedGitCommitData, setSelectedGitCommitIndex } from '@renderer/class/LocalMemory'
-import { JSX, useState } from 'react'
+import { JSX, useEffect, useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
 export interface RepoItem {
@@ -13,6 +13,7 @@ export interface RepoItem {
 
 export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.Element {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
+  const [repoData, setRepoData] = useState(_repoData)
 
   const onItemClick = (index: number): void => {
     setSelectedGitCommitIndex(index)
@@ -28,6 +29,17 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
     }
     setSelectedItemIndex(index)
   }
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const handleRefreshRepoView = (data: any): void => {
+    setRepoData(data)
+  }
+
+  useEffect(() => {
+    eventManager.on('refresh-repo-view', handleRefreshRepoView)
+    return () => {
+      eventManager.off('refresh-repo-view', handleRefreshRepoView)
+    }
+  }, [])
 
   return (
     <Box
@@ -41,7 +53,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
       }}
     >
       <List sx={{ width: '360px', height: '400px', backgroundColor: 'black', overflow: 'auto' }}>
-        {_repoData.map((item, index) => (
+        {repoData.map((item, index) => (
           <ListItem key={index} disablePadding>
             <div
               className={selectedItemIndex === index ? 'list-item-on' : 'list-item-off'}

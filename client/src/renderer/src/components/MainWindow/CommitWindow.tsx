@@ -44,11 +44,13 @@ export default function CommitWindow(): JSX.Element {
     } else {
       setOpenSquashCommitsButton(false)
     }
-  }
+  } ///
   const squashCommitsHandler = async (): Promise<void> => {
+    //
     try {
       await window.electron.squashCommits(getSelectedGitCommitIndex(), value)
-      console.log('Commits squashed successfully')
+      const repoData = await window.electron.handleGetRepoData()
+      eventManager.trigger('refresh-repo-view', repoData)
     } catch (error) {
       console.error('Error squashing commits:', error)
     }

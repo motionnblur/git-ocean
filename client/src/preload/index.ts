@@ -60,7 +60,12 @@ const customCommandAPI = {
     hostname: os.hostname(),
     homeDir: os.homedir(),
     cwd: os.homedir()
+  },
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  handleGetRepoData: async () => {
+    return await ipcRenderer.invoke('get-repo-data')
   }
+
   // NOTE: The explicit exposure of raw ipcRenderer methods like:
   //   ipcRenderer: { invoke: ..., send: ..., on: ... }
   // is removed. It's generally better and safer to expose only specific

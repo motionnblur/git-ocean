@@ -42,6 +42,11 @@ export const eventReceiver = (data: any): void => {
       return false
     }
   })
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  ipcMain.handle('get-repo-data', async () => {
+    const commitData = await getGitCommitData(execPromise)
+    return commitData
+  })
   ipcMain.on('execute-command', (event, command) => {
     if (!command || typeof command !== 'string') {
       event.sender.send('command-output', 'Error: Invalid command received.')
