@@ -5,7 +5,7 @@ import icon from '../../resources/icon.png?asset'
 import { exec, spawn } from 'child_process'
 import util from 'util'
 import path from 'path'
-import { eventReceiver } from './eventRecievers'
+import { eventReceiver } from '../events/receivers/eventRecievers'
 // eslint-disable-next-line @typescript-eslint/no-require-imports
 const os = require('os')
 import fs from 'fs'

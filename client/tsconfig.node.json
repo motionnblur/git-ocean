@@ -1,6 +1,6 @@
 {
   "extends": "@electron-toolkit/tsconfig/tsconfig.node.json",
-  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "src/classes/**/*", "src/git/gitFunctions.ts"],
+  "include": ["electron.vite.config.*", "src/main/**/*", "src/preload/**/*", "src/classes/**/*", "src/git/gitFunctions.ts", "src/events/receivers/eventRecievers.ts"],
   "compilerOptions": {
     "composite": true,
     "types": ["electron-vite/node"]
