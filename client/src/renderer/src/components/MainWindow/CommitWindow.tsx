@@ -13,6 +13,7 @@ export default function CommitWindow(): JSX.Element {
   const [openDropCommitButton, setOpenDropCommitButton] = useState(
     getSelectedGitCommitIndex() === 0
   )
+  const [openSquashCommitsButton, setOpenSquashCommitsButton] = useState(false)
 
   const commitMessageHandler = (message: string): void => {
     setValue(message)
@@ -37,17 +38,24 @@ export default function CommitWindow(): JSX.Element {
   const closeDropCommitButtonHandler = (): void => {
     setOpenDropCommitButton(false)
   }
+  const updateCommitIndexHandler = (commitIndex: number): void => {
+    if (commitIndex > 0) {
+      setOpenSquashCommitsButton(true)
+    } else {
+      setOpenSquashCommitsButton(false)
+    }
+  }
 
   useEffect(() => {
     eventManager.on('commit-message', commitMessageHandler)
-    eventManager.on('change-commit-message', changeCommitMessageHandler)
     eventManager.on('open-drop-commit-button', openDropCommitButtonHandler)
     eventManager.on('close-drop-commit-button', closeDropCommitButtonHandler)
+    eventManager.on('update-commit-index', updateCommitIndexHandler)
     return () => {
       eventManager.off('commit-message', commitMessageHandler)
-      eventManager.off('change-commit-message', changeCommitMessageHandler)
       eventManager.off('open-drop-commit-button', openDropCommitButtonHandler)
       eventManager.off('close-drop-commit-button', closeDropCommitButtonHandler)
+      eventManager.off('update-commit-index', updateCommitIndexHandler)
     }
   }, [])
 
@@ -92,6 +100,11 @@ export default function CommitWindow(): JSX.Element {
           {openDropCommitButton && (
             <Button variant="contained" color="error" onClick={dropLastCommitHandler}>
               Drop Commit
+            </Button>
+          )}
+          {openSquashCommitsButton && (
+            <Button variant="contained" color="success">
+              Squash Commits
             </Button>
           )}
         </Stack>
