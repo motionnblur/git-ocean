@@ -1,8 +1,14 @@
 import { IconButton } from '@mui/material'
 import FolderIcon from '@mui/icons-material/Folder'
-import { JSX } from 'react'
+import { JSX, useEffect } from 'react'
 import { eventManager } from '@renderer/class/EventManager'
 export default function UploadButton(): JSX.Element {
+  useEffect(() => {
+    window.electron.ipcRenderer.on('alert', () => {
+      alert('hello')
+    })
+  }, [])
+
   return (
     <IconButton
       edge="end"

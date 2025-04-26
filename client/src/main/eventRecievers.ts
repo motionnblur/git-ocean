@@ -3,7 +3,7 @@ import { changeGitCommitName, getGitCommitData } from './customEventFuncs'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
-  const { ipcMain, dialog, execPromise, os, fs, path, spawn } = data
+  const { mainWindow, ipcMain, dialog, execPromise, os, fs, path, spawn } = data
   let { currentWorkingDirectory } = data
 
   ipcMain.handle('select-folder', async () => {
@@ -18,6 +18,8 @@ export const eventReceiver = (data: any): void => {
     if (result.canceled || result.filePaths.length === 0) {
       return null
     }
+
+    mainWindow.webContents.send('alert')
 
     return result.filePaths[0]
   })

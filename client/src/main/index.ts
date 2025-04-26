@@ -13,9 +13,11 @@ const execPromise = util.promisify(exec)
 
 const currentWorkingDirectory = os.homedir()
 
+let mainWindow: BrowserWindow
+
 function createWindow(): void {
   // Create the browser window.
-  const mainWindow = new BrowserWindow({
+  mainWindow = new BrowserWindow({
     width: 1366,
     height: 820,
     show: false,
@@ -69,6 +71,18 @@ app.whenReady().then(() => {
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
+
+  eventReceiver({
+    mainWindow,
+    ipcMain,
+    dialog,
+    execPromise,
+    os,
+    fs,
+    path,
+    spawn,
+    currentWorkingDirectory
+  })
 })
 
 // Quit when all windows are closed, except on macOS. There, it's common
@@ -82,4 +96,3 @@ app.on('window-all-closed', () => {
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
-eventReceiver({ ipcMain, dialog, execPromise, os, fs, path, spawn, currentWorkingDirectory })

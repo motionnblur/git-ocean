@@ -17,7 +17,7 @@ export default function CommitWindow(): JSX.Element {
   }
   const handleKeyDown = (event): void => {
     if (event.key === 'Enter') {
-      const commitData: CommitData = getSelectedGitCommitData()
+      const commitData: CommitData = getSelectedGitCommitData() // Get the current commit data
       commitData.commitName = value
       setSelectedGitCommitData(commitData)
 
