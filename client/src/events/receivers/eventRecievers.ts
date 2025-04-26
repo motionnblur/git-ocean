@@ -139,9 +139,9 @@ export const eventReceiver = (data: any): void => {
     }
   })
 
-  ipcMain.on('squash-commits', async (event, numberToSquash) => {
+  ipcMain.on('squash-commits', async (event, numberToSquash, newCommitMessage) => {
     try {
-      await squashCommits(execPromise, numberToSquash)
+      await squashCommits(execPromise, numberToSquash, newCommitMessage)
       // You can optionally send back a success message:
       event.reply('squash-commits-success', 'Commits have been squashed.')
     } catch (err) {

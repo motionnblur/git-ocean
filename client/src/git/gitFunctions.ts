@@ -109,10 +109,14 @@ export const dropLastCommit = async (execPromise: any): Promise<void> => {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const squashCommits = async (execPromise: any, numberToSquash: number): Promise<void> => {
+export const squashCommits = async (
+  execPromise: any,
+  numberToSquash: number,
+  newCommitMessage: string
+): Promise<void> => {
   try {
-    await execPromise(`git reset --soft HEAD~${numberToSquash + 1}`)
-    await execPromise(`git commit -m "Squashed ${numberToSquash + 1} commits"`)
+    await execPromise(`git reset --soft HEAD~${numberToSquash + 1}`) // aaa
+    await execPromise(`git commit -m "${newCommitMessage}"`)
   } catch (err) {
     console.error('Failed to squash commits:', err)
   }

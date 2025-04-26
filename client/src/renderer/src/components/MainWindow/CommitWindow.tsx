@@ -46,7 +46,7 @@ export default function CommitWindow(): JSX.Element {
     }
   }
   const squashCommitsHandler = (): void => {
-    window.electron.squashCommits(getSelectedGitCommitIndex())
+    window.electron.squashCommits(getSelectedGitCommitIndex(), value) ////
   }
 
   useEffect(() => {
