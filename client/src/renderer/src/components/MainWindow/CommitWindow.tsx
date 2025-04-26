@@ -1,4 +1,4 @@
-import { Box, Button, TextField } from '@mui/material'
+import { Box, Button, Stack, TextField } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
@@ -67,9 +67,14 @@ export default function CommitWindow(): JSX.Element {
           alignItems: 'center'
         }}
       >
-        <Button variant="contained" onClick={changeCommitMessageHandler}>
-          Update Message
-        </Button>
+        <Stack direction="column" spacing={1} sx={{ paddingTop: '26px' }}>
+          <Button variant="contained" onClick={changeCommitMessageHandler}>
+            Update Message
+          </Button>
+          <Button variant="contained" color="error">
+            Drop Commit
+          </Button>
+        </Stack>
       </Box>
     </Box>
   )
