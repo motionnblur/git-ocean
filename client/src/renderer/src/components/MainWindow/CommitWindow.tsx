@@ -45,8 +45,13 @@ export default function CommitWindow(): JSX.Element {
       setOpenSquashCommitsButton(false)
     }
   }
-  const squashCommitsHandler = (): void => {
-    window.electron.squashCommits(getSelectedGitCommitIndex(), value) ////
+  const squashCommitsHandler = async (): Promise<void> => {
+    try {
+      await window.electron.squashCommits(getSelectedGitCommitIndex(), value)
+      console.log('Commits squashed successfully')
+    } catch (error) {
+      console.error('Error squashing commits:', error)
+    }
   }
 
   useEffect(() => {
