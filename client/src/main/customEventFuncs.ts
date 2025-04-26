@@ -1,4 +1,3 @@
-import { stderr } from 'process'
 import fs from 'fs'
 import path from 'path'
 
@@ -78,8 +77,19 @@ edit ${commitHash}
 
       await execPromise('git rebase --continue')
 
-      /*       await waitForMessageDirectory(rebaseMessageDir)
-      await fs.promises.writeFile(rebaseMessagePath, commitName, 'utf8') */
+      try {
+        const result = await execPromise('git symbolic-ref --short -q HEAD')
+        const branchName =
+          typeof result === 'string' ? result.trim() : (result.stdout?.trim?.() ?? '')
+
+        if (!branchName) {
+          console.warn('⚠️ HEAD is detached after rebase. You may want to reattach it to a branch.')
+        } else {
+          console.log(`✅ Rebase completed. HEAD is now on branch '${branchName}'.`)
+        }
+      } catch (err) {
+        console.error('Failed to check HEAD status:', err)
+      }
     } catch (err) {
       console.error('Failed to read git-rebase-todo:', err)
     }
