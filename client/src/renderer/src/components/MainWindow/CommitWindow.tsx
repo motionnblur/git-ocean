@@ -9,6 +9,7 @@ import { JSX, useEffect, useState } from 'react'
 
 export default function CommitWindow(): JSX.Element {
   const [value, setValue] = useState('')
+  const [openDropCommitButton, setOpenDropCommitButton] = useState(false)
 
   const commitMessageHandler = (message: string): void => {
     setValue(message)
@@ -23,13 +24,27 @@ export default function CommitWindow(): JSX.Element {
   const dropLastCommitHandler = async (): Promise<void> => {
     await window.electron.dropLastCommit()
   }
+  const openDropCommitButtonHandler = (): void => {
+    setOpenDropCommitButton(true)
+  }
+  /**
+   * Handler for the close-drop-commit-button event. Sets openDropCommitButton to false.
+   */
+
+  const closeDropCommitButtonHandler = (): void => {
+    setOpenDropCommitButton(false)
+  }
 
   useEffect(() => {
     eventManager.on('commit-message', commitMessageHandler)
     eventManager.on('change-commit-message', changeCommitMessageHandler)
+    eventManager.on('open-drop-commit-button', openDropCommitButtonHandler)
+    eventManager.on('close-drop-commit-button', closeDropCommitButtonHandler)
     return () => {
       eventManager.off('commit-message', commitMessageHandler)
       eventManager.off('change-commit-message', changeCommitMessageHandler)
+      eventManager.off('open-drop-commit-button', openDropCommitButtonHandler)
+      eventManager.off('close-drop-commit-button', closeDropCommitButtonHandler)
     }
   }, [])
 
@@ -71,9 +86,11 @@ export default function CommitWindow(): JSX.Element {
           <Button variant="contained" onClick={changeCommitMessageHandler}>
             Update Message
           </Button>
-          <Button variant="contained" color="error" onClick={dropLastCommitHandler}>
-            Drop Commit
-          </Button>
+          {openDropCommitButton && (
+            <Button variant="contained" color="error" onClick={dropLastCommitHandler}>
+              Drop Commit
+            </Button>
+          )}
         </Stack>
       </Box>
     </Box>

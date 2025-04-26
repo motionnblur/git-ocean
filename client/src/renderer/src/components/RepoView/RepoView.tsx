@@ -18,6 +18,12 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
     setSelectedGitCommitData(_repoData[index])
     eventManager.trigger('open-commit-window')
     eventManager.trigger('commit-message', _repoData[index].commitName)
+
+    if (index === 0) {
+      eventManager.trigger('open-drop-commit-button')
+    } else {
+      eventManager.trigger('close-drop-commit-button')
+    }
     setSelectedItemIndex(index)
   }
 
