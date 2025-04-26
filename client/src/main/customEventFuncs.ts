@@ -38,7 +38,12 @@ edit ${commitHash}
 
   // Step 1: Start the git rebase process (but don't try to write the todo list yet)
   try {
-    execPromise('git rebase -i ' + commitHash + '^')
+    await execPromise(`git rebase -i ${commitHash}^`, {
+      env: {
+        ...process.env,
+        GIT_SEQUENCE_EDITOR: `sed -i '1s/^pick /edit /'`
+      }
+    })
 
     const rebaseTodoPath = path.join(currentDir, '..', '.git', 'rebase-merge', 'git-rebase-todo')
     const rebaseMergeDir = path.dirname(rebaseTodoPath)
@@ -54,14 +59,29 @@ edit ${commitHash}
     try {
       const fileContent = await fs.promises.readFile(rebaseTodoPath, 'utf8')
       console.log('Current rebase todo list:\n', fileContent)
-      return fileContent
+
+      // Step 4: Change the first word to firstWord and save the file
+      const updatedContent = fileContent
+        .split('\n')
+        .map((line) => {
+          if (line.startsWith('pick') && line.includes(commitHash)) {
+            return line.replace(/^pick/, 'edit')
+          }
+          return line
+        })
+        .join('\n')
+      await fs.promises.writeFile(rebaseTodoPath, updatedContent, 'utf8')
+      console.log('Updated rebase todo list:\n', updatedContent)
+
+      const sanitizedCommitName = commitName.replace(/"/g, '\\"')
+      await execPromise(`git commit --amend --allow-empty -am "${sanitizedCommitName}"`)
+
+      await execPromise('git rebase --continue')
+
+      /*       await waitForMessageDirectory(rebaseMessageDir)
+      await fs.promises.writeFile(rebaseMessagePath, commitName, 'utf8') */
     } catch (err) {
       console.error('Failed to read git-rebase-todo:', err)
-      return null
-    }
-
-    if (stderr) {
-      console.error('Error during rebase:', error)
     }
   } catch (err) {
     console.error('Rebase command failed:', err)

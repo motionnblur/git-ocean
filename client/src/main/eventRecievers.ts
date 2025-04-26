@@ -19,7 +19,7 @@ export const eventReceiver = (data: any): void => {
       return null
     }
 
-    mainWindow.webContents.send('alert')
+    //mainWindow.webContents.send('alert')
 
     return result.filePaths[0]
   })
