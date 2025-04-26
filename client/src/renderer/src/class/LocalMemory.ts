@@ -22,3 +22,13 @@ export function setSelectedGitCommitData(data: CommitData): void {
 export function getSelectedGitCommitData(): CommitData {
   return selectedGitCommitData
 }
+
+export let selectedGitCommitIndex: number
+
+export function setSelectedGitCommitIndex(index: number): void {
+  selectedGitCommitIndex = index
+}
+
+export function getSelectedGitCommitIndex(): number {
+  return selectedGitCommitIndex
+}

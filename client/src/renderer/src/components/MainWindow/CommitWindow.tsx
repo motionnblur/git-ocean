@@ -3,13 +3,16 @@ import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
   getSelectedGitCommitData,
+  getSelectedGitCommitIndex,
   setSelectedGitCommitData
 } from '@renderer/class/LocalMemory'
 import { JSX, useEffect, useState } from 'react'
 
 export default function CommitWindow(): JSX.Element {
   const [value, setValue] = useState(getSelectedGitCommitData().commitName)
-  const [openDropCommitButton, setOpenDropCommitButton] = useState(false)
+  const [openDropCommitButton, setOpenDropCommitButton] = useState(
+    getSelectedGitCommitIndex() === 0
+  )
 
   const commitMessageHandler = (message: string): void => {
     setValue(message)
