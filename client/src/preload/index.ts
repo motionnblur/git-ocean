@@ -5,6 +5,7 @@ import os from 'os'
 const customCommandAPI = {
   // Function to send a command to the main process
   sendCommand: (command) => ipcRenderer.send('execute-command', command),
+  dropLastCommit: () => ipcRenderer.send('drop-last-commit'),
   changeGitCommitName: (commitData) => ipcRenderer.send('change-git-commit-name', commitData),
 
   // Function to register a callback for receiving command output

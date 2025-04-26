@@ -98,6 +98,16 @@ edit ${commitHash}
   }
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const dropLastCommit = async (execPromise: any): Promise<void> => {
+  try {
+    await execPromise('git reset --hard HEAD^')
+    console.log('Last commit has been dropped.')
+  } catch (err) {
+    console.error('Failed to drop last commit:', err)
+  }
+}
+
 // Helper function to wait for the rebase directory to be created
 const waitForRebaseDirectory = async (dirPath: string): Promise<void> => {
   console.log('Waiting for the rebase directory to appear...')

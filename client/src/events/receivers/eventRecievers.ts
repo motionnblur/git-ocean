@@ -1,5 +1,5 @@
 import { memory } from '../../classes/Memory'
-import { changeGitCommitName, getGitCommitData } from '../../git/gitFunctions'
+import { changeGitCommitName, dropLastCommit, getGitCommitData } from '../../git/gitFunctions'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
@@ -120,6 +120,17 @@ export const eventReceiver = (data: any): void => {
       console.error('Failed to change commit message:', err)
       // Optionally notify the renderer process:
       event.reply('change-git-commit-name-error', err.message || 'Unknown error')
+    }
+  })
+  ipcMain.on('drop-last-commit', async (event) => {
+    try {
+      await dropLastCommit(execPromise)
+      // You can optionally send back a success message:
+      event.reply('remove-last-commit-success', 'Last commit has been dropped.')
+    } catch (err) {
+      console.error('Failed to drop last commit:', err)
+      // Optionally notify the renderer process:
+      event.reply('remove-last-commit-error', err.message || 'Unknown error')
     }
   })
 }

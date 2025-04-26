@@ -20,6 +20,9 @@ export default function CommitWindow(): JSX.Element {
 
     window.electron.changeGitCommitName(getSelectedGitCommitData())
   }
+  const dropLastCommitHandler = async (): Promise<void> => {
+    await window.electron.dropLastCommit()
+  }
 
   useEffect(() => {
     eventManager.on('commit-message', commitMessageHandler)
@@ -68,7 +71,7 @@ export default function CommitWindow(): JSX.Element {
           <Button variant="contained" onClick={changeCommitMessageHandler}>
             Update Message
           </Button>
-          <Button variant="contained" color="error">
+          <Button variant="contained" color="error" onClick={dropLastCommitHandler}>
             Drop Commit
           </Button>
         </Stack>
