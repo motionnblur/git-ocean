@@ -1,4 +1,4 @@
-import { Box, TextField } from '@mui/material'
+import { Box, Button, TextField } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
@@ -35,7 +35,13 @@ export default function CommitWindow(): JSX.Element {
   return (
     <Box
       component="form"
-      sx={{ '& > :not(style)': { m: 1, width: '25ch' }, display: 'flex', justifyContent: 'center' }}
+      sx={{
+        '& > :not(style)': { m: 1, width: '25ch' },
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
       noValidate
       autoComplete="off"
     >
@@ -52,6 +58,18 @@ export default function CommitWindow(): JSX.Element {
         disabled={textDisabled}
         onKeyDown={handleKeyDown}
       />
+
+      <Box
+        sx={{
+          width: '100%',
+          height: '40px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <Button variant="contained">Update Message</Button>
+      </Box>
     </Box>
   )
 }
