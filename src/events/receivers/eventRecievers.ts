@@ -1,3 +1,4 @@
+import { ipcMain } from 'electron'
 import { memory } from '../../classes/Memory'
 import {
   changeGitCommitName,
@@ -6,11 +7,39 @@ import {
   squashCommits
 } from '../../git/gitFunctions'
 import * as pty from 'node-pty'
+import * as os from 'os'
+
+let ptyProcess: pty.IPty | null = null
+
+ipcMain.on('start-shell', (event) => {
+  if (!ptyProcess) {
+    ptyProcess = pty.spawn('/bin/bash', [], {
+      name: 'xterm-256color',
+      cwd: os.homedir(),
+      env: process.env
+    })
+
+    ptyProcess.on('data', (data) => {
+      event.sender.send('command-output', data)
+    })
+
+    ptyProcess.on('exit', (code) => {
+      event.sender.send('command-exit', code)
+      ptyProcess = null
+    })
+
+    ptyProcess.on('error', (err) => {
+      event.sender.send('command-output', `Error: ${err.message}`)
+    })
+  }
+})
+ipcMain.on('send-shell-input', (_event, input: string) => {
+  ptyProcess?.write(input)
+})
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
-  const { mainWindow, ipcMain, dialog, execPromise, os, fs, path, spawn } = data
-  let { userHomeDirectory } = data
+  const { mainWindow, ipcMain, dialog, execPromise, os } = data
 
   ipcMain.handle('select-folder', async () => {
     if (memory.isFileDialogOpen) return null

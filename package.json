@@ -29,6 +29,7 @@
     "@mui/icons-material": "^7.0.2",
     "@mui/material": "^7.0.2",
     "@types/react-window": "^1.8.8",
+    "@xterm/xterm": "^5.5.0",
     "node-pty": "file:../../Downloads/node-pty",
     "react-terminal-ui": "file:packages/terminal.tgz",
     "react-window": "^1.8.11"
