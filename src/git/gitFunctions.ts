@@ -1,5 +1,6 @@
 import fs from 'fs'
 import path from 'path'
+import { memory } from '../classes/Memory'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGitCommitData = async (execPromise: any, folderPath: string): Promise<any[]> => {
@@ -44,7 +45,12 @@ edit ${commitHash}
       }
     })
 
-    const rebaseTodoPath = path.join(currentDir, '..', '.git', 'rebase-merge', 'git-rebase-todo')
+    const rebaseTodoPath = path.join(
+      memory.currentGitDirectory,
+      '.git',
+      'rebase-merge',
+      'git-rebase-todo'
+    )
     const rebaseMergeDir = path.dirname(rebaseTodoPath)
 
     console.log('Rebase Todo Path:', rebaseTodoPath)

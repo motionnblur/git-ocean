@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextField } from '@mui/material'
+import { Box, Button, Stack, TextareaAutosize, TextField } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
@@ -82,14 +82,18 @@ export default function CommitWindow(): JSX.Element {
       noValidate
       autoComplete="off"
     >
-      <TextField
-        id="outlined-basic"
-        hiddenLabel
-        variant="filled"
-        sx={{ backgroundColor: 'white' }}
-        multiline
-        rows={1}
-        maxRows={1}
+      <TextareaAutosize
+        aria-label="minimum height"
+        minRows={3}
+        placeholder="Minimum 3 rows"
+        style={{
+          width: 276,
+          minWidth: 276,
+          maxWidth: 276,
+          height: 40,
+          minHeight: 40,
+          maxHeight: 80
+        }}
         value={value}
         onChange={(event) => setValue(event.target.value)}
       />

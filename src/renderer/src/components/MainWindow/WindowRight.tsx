@@ -16,7 +16,7 @@ export default function WindowRight(): JSX.Element {
   }, [])
   return (
     <>
-      <Box sx={{ width: '280px', height: 1, backgroundColor: '#222831' }}>
+      <Box sx={{ width: '360px', height: 1, backgroundColor: '#222831' }}>
         {openCommitWindow && <CommitWindow />}
       </Box>
     </>
