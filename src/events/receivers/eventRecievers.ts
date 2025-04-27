@@ -9,7 +9,7 @@ import {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
   const { mainWindow, ipcMain, dialog, execPromise, os, fs, path, spawn } = data
-  let { currentWorkingDirectory } = data
+  let { userHomeDirectory } = data
 
   ipcMain.handle('select-folder', async () => {
     if (memory.isFileDialogOpen) return null
@@ -24,8 +24,7 @@ export const eventReceiver = (data: any): void => {
       return null
     }
 
-    //mainWindow.webContents.send('alert')
-
+    memory.currentGitDirectory = result.filePaths[0]
     return result.filePaths[0]
   })
   ipcMain.handle('check-git-repo', async (_event, folderPath: string) => {
@@ -44,7 +43,7 @@ export const eventReceiver = (data: any): void => {
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipcMain.handle('get-repo-data', async () => {
-    const commitData = await getGitCommitData(execPromise, currentWorkingDirectory)
+    const commitData = await getGitCommitData(execPromise, memory.currentGitDirectory)
     return commitData
   })
   ipcMain.on('execute-command', (event, command) => {
@@ -69,12 +68,12 @@ export const eventReceiver = (data: any): void => {
       if (!targetDirectory) {
         newWorkingDirectory = os.homedir()
       } else if (targetDirectory === '..') {
-        newWorkingDirectory = path.dirname(currentWorkingDirectory)
-        if (newWorkingDirectory.length < path.parse(currentWorkingDirectory).root.length) {
-          newWorkingDirectory = path.parse(currentWorkingDirectory).root
+        newWorkingDirectory = path.dirname(userHomeDirectory)
+        if (newWorkingDirectory.length < path.parse(userHomeDirectory).root.length) {
+          newWorkingDirectory = path.parse(userHomeDirectory).root
         }
       } else {
-        newWorkingDirectory = path.resolve(currentWorkingDirectory, targetDirectory)
+        newWorkingDirectory = path.resolve(userHomeDirectory, targetDirectory)
 
         if (
           !fs.existsSync(newWorkingDirectory) ||
@@ -87,20 +86,20 @@ export const eventReceiver = (data: any): void => {
       }
 
       console.log(`CD command: Changing directory to ${newWorkingDirectory}`)
-      currentWorkingDirectory = newWorkingDirectory
-      event.sender.send('command-output', `Changed directory to ${currentWorkingDirectory}`)
-      event.sender.send('cwd-updated', currentWorkingDirectory)
+      userHomeDirectory = newWorkingDirectory
+      event.sender.send('command-output', `Changed directory to ${userHomeDirectory}`)
+      event.sender.send('cwd-updated', userHomeDirectory)
       event.sender.send('command-exit', 0)
       return // Important: Exit here to prevent spawning a 'cd' process
     }
 
     // For other commands, proceed with spawning the child process
-    console.log(`Executing command: ${command} in directory: ${currentWorkingDirectory}`)
+    console.log(`Executing command: ${command} in directory: ${userHomeDirectory}`)
     const isWindows = process.platform === 'win32'
     const shell = isWindows ? 'cmd.exe' : '/bin/sh'
     const spawnArgs = isWindows ? ['/c', command] : ['-c', command]
 
-    const child = spawn(shell, spawnArgs, { cwd: currentWorkingDirectory, stdio: 'pipe' })
+    const child = spawn(shell, spawnArgs, { cwd: userHomeDirectory, stdio: 'pipe' })
 
     child.stdout.on('data', (data) => {
       event.sender.send('command-output', data.toString())

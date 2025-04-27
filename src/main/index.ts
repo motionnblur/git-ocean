@@ -11,7 +11,7 @@ const os = require('os')
 import fs from 'fs'
 const execPromise = util.promisify(exec)
 
-const currentWorkingDirectory = os.homedir()
+const userHomeDirectory = os.homedir()
 
 let mainWindow: BrowserWindow
 
@@ -82,7 +82,7 @@ app.whenReady().then(() => {
     fs,
     path,
     spawn,
-    currentWorkingDirectory
+    userHomeDirectory
   })
 })
 
