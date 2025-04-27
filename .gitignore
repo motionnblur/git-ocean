@@ -1,2 +1,8 @@
-
-backend/.idea/workspace.xml
+node_modules
+packages
+dist
+out
+.DS_Store
+.eslintcache
+*.log*
+*tgz
