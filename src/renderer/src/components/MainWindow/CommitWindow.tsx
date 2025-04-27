@@ -18,12 +18,15 @@ export default function CommitWindow(): JSX.Element {
   const commitMessageHandler = (message: string): void => {
     setValue(message)
   }
-  const changeCommitMessageHandler = (): void => {
+  const changeCommitMessageHandler = async (): Promise<void> => {
     const commitData: CommitData = getSelectedGitCommitData() // Get the current commit data
     commitData.commitName = value
     setSelectedGitCommitData(commitData)
 
-    window.electron.changeGitCommitName(getSelectedGitCommitData())
+    await window.electron.changeGitCommitName(getSelectedGitCommitData())
+
+    const repoData = await window.electron.handleGetRepoData()
+    eventManager.trigger('refresh-repo-view', repoData)
   }
   const dropLastCommitHandler = async (): Promise<void> => {
     await window.electron.dropLastCommit()

@@ -109,15 +109,15 @@ export const eventReceiver = (data: any): void => {
     })
   })
 
-  ipcMain.on('change-git-commit-name', async (event, data) => {
+  ipcMain.handle('change-git-commit-name', async (event, data) => {
     try {
       await changeGitCommitName(execPromise, data.commitData, data.commitName)
       // You can optionally send back a success message:
-      event.reply('change-git-commit-name-success', 'Commit message changed.')
+      return { success: true }
     } catch (err) {
       console.error('Failed to change commit message:', err)
       // Optionally notify the renderer process:
-      event.reply('change-git-commit-name-error', err.message || 'Unknown error')
+      throw err
     }
   })
   ipcMain.on('drop-last-commit', async (event) => {
