@@ -52,7 +52,29 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
         alignItems: 'center'
       }}
     >
-      <List sx={{ width: '360px', height: '400px', backgroundColor: 'black', overflow: 'auto' }}>
+      <List
+        sx={{
+          width: '360px',
+          height: '400px',
+          backgroundColor: 'black',
+          overflow: 'hidden',
+          '&:hover': {
+            overflowY: 'auto'
+          },
+          overflowX: 'hidden',
+          scrollbarWidth: 'thin', // Firefox
+          '&::-webkit-scrollbar': {
+            width: '6px'
+          },
+          '&::-webkit-scrollbar-thumb': {
+            backgroundColor: '#888',
+            borderRadius: '4px'
+          },
+          '&::-webkit-scrollbar-track': {
+            backgroundColor: 'transparent'
+          }
+        }}
+      >
         {repoData.map((item, index) => (
           <ListItem key={index} disablePadding>
             <div
