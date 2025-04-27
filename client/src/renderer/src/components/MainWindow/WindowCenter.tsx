@@ -56,7 +56,7 @@ export default function WindowCenter(): JSX.Element {
   }, [])
 
   return (
-    <Box sx={{ flexGrow: 1, backgroundColor: '#dbd8e3' }}>
+    <Box sx={{ flexGrow: 1, backgroundColor: '#393E46' }}>
       {terminalOpen && (
         <Terminal
           name="Terminal"

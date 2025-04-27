@@ -46,7 +46,6 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
       sx={{
         width: '100%',
         height: '100%',
-        backgroundColor: '#171130',
         display: 'flex',
         justifyContent: 'center',
         alignItems: 'center'
@@ -59,7 +58,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
           backgroundColor: 'black',
           overflow: 'hidden',
           borderRadius: '6px',
-          boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.5)', // <-- Shadow here
+          boxShadow: '0 0 12px rgba(0, 0, 0, 0.5)', // <-- Shadow here
           '&:hover': {
             overflowY: 'auto'
           },
