@@ -35,8 +35,15 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
   }
 
   useEffect(() => {
+    const refreshRepoView = setInterval(async () => {
+      const refreshedRepoData = await window.electron.handleGetRepoData()
+      if (JSON.stringify(repoData) !== JSON.stringify(refreshedRepoData)) {
+        setRepoData(refreshedRepoData)
+      }
+    }, 1000 * 5)
     eventManager.on('refresh-repo-view', handleRefreshRepoView)
     return () => {
+      clearInterval(refreshRepoView)
       eventManager.off('refresh-repo-view', handleRefreshRepoView)
     }
   }, [])
