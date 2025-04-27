@@ -2,11 +2,11 @@ import fs from 'fs'
 import path from 'path'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const getGitCommitData = async (execPromise: any): Promise<any[]> => {
-  const { stdout: commitData } = await execPromise('git log --format=%H')
-  const { stdout: commitNames } = await execPromise('git log --format=%s')
-  const { stdout: authorData } = await execPromise('git log --format=%an')
-  const { stdout: dateData } = await execPromise('git log --format=%ad')
+export const getGitCommitData = async (execPromise: any, folderPath: string): Promise<any[]> => {
+  const { stdout: commitData } = await execPromise('git log --format=%H', { cwd: folderPath })
+  const { stdout: commitNames } = await execPromise('git log --format=%s', { cwd: folderPath })
+  const { stdout: authorData } = await execPromise('git log --format=%an', { cwd: folderPath })
+  const { stdout: dateData } = await execPromise('git log --format=%ad', { cwd: folderPath })
 
   const commitDataArray = commitData.trim().split('\n')
   const commitNamesArray = commitNames.trim().split('\n')

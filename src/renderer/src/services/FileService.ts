@@ -25,7 +25,7 @@ export class FileService {
   }
 
   constructor() {
-    eventManager.on('open-file', this.openFileDialog)
+    eventManager.on('open-folder', this.openFileDialog)
   }
 }
 

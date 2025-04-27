@@ -9,7 +9,7 @@ export default function UploadButton(): JSX.Element {
       color="inherit"
       aria-label="menu"
       onClick={() => {
-        eventManager.trigger('open-file')
+        eventManager.trigger('open-folder')
       }}
     >
       <FolderIcon fontSize="small" />

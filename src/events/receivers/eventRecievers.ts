@@ -33,7 +33,7 @@ export const eventReceiver = (data: any): void => {
       const { stdout } = await execPromise('git rev-parse --is-inside-work-tree', {
         cwd: folderPath
       })
-      const commitData = await getGitCommitData(execPromise)
+      const commitData = await getGitCommitData(execPromise, folderPath)
       //console.log(commitData)
       _event.sender.send('repo-view-open', commitData)
       return stdout.trim() === 'true'
@@ -44,7 +44,7 @@ export const eventReceiver = (data: any): void => {
   })
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   ipcMain.handle('get-repo-data', async () => {
-    const commitData = await getGitCommitData(execPromise)
+    const commitData = await getGitCommitData(execPromise, currentWorkingDirectory)
     return commitData
   })
   ipcMain.on('execute-command', (event, command) => {
