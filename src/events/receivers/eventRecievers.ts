@@ -5,6 +5,7 @@ import {
   getGitCommitData,
   squashCommits
 } from '../../git/gitFunctions'
+import * as pty from 'node-pty'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const eventReceiver = (data: any): void => {
@@ -57,66 +58,27 @@ export const eventReceiver = (data: any): void => {
     const primaryCommand = args[0]
     const commandArgs = args.slice(1)
 
-    if (primaryCommand === 'cd') {
-      let targetDirectory: string | null = null
-      if (commandArgs.length > 0) {
-        targetDirectory = commandArgs[0]
-      }
-
-      let newWorkingDirectory: string
-
-      if (!targetDirectory) {
-        newWorkingDirectory = os.homedir()
-      } else if (targetDirectory === '..') {
-        newWorkingDirectory = path.dirname(userHomeDirectory)
-        if (newWorkingDirectory.length < path.parse(userHomeDirectory).root.length) {
-          newWorkingDirectory = path.parse(userHomeDirectory).root
-        }
-      } else {
-        newWorkingDirectory = path.resolve(userHomeDirectory, targetDirectory)
-
-        if (
-          !fs.existsSync(newWorkingDirectory) ||
-          !fs.statSync(newWorkingDirectory).isDirectory()
-        ) {
-          event.sender.send('command-output', `cd: no such file or directory: ${targetDirectory}`)
-          event.sender.send('command-exit', 1)
-          return
-        }
-      }
-
-      console.log(`CD command: Changing directory to ${newWorkingDirectory}`)
-      userHomeDirectory = newWorkingDirectory
-      event.sender.send('command-output', `Changed directory to ${userHomeDirectory}`)
-      event.sender.send('cwd-updated', userHomeDirectory)
-      event.sender.send('command-exit', 0)
-      return // Important: Exit here to prevent spawning a 'cd' process
-    }
-
-    // For other commands, proceed with spawning the child process
-    console.log(`Executing command: ${command} in directory: ${userHomeDirectory}`)
-    const isWindows = process.platform === 'win32'
-    const shell = isWindows ? 'cmd.exe' : '/bin/sh'
-    const spawnArgs = isWindows ? ['/c', command] : ['-c', command]
-
-    const child = spawn(shell, spawnArgs, { cwd: userHomeDirectory, stdio: 'pipe' })
-
-    child.stdout.on('data', (data) => {
-      event.sender.send('command-output', data.toString())
+    // Create a PTY for interactive commands like 'nano'
+    const ptyProcess = pty.spawn(primaryCommand, commandArgs, {
+      name: 'xterm-256color',
+      cwd: os.homedir(), // Set working directory, or change this as needed
+      env: process.env // Set the environment for the process
     })
 
-    child.stderr.on('data', (data) => {
-      event.sender.send('command-output', `stderr: ${data.toString()}`)
+    // Listen for data from the PTY (i.e., command output)
+    ptyProcess.on('data', (data) => {
+      event.sender.send('command-output', data)
     })
 
-    child.on('error', (error) => {
-      event.sender.send('command-output', `Spawn Error: ${error.message}`)
-      event.sender.send('command-exit', 1)
-    })
-
-    child.on('close', (code) => {
-      console.log(`Command exited with code: ${code}`)
+    // Listen for the process exit
+    ptyProcess.on('exit', (code) => {
       event.sender.send('command-exit', code)
+    })
+
+    // Optionally handle other errors
+    ptyProcess.on('error', (error) => {
+      event.sender.send('command-output', `Error: ${error.message}`)
+      event.sender.send('command-exit', 1)
     })
   })
 
