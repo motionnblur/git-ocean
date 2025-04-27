@@ -52,7 +52,7 @@ const TerminalComponent: React.FC = () => {
     }
   }, [])
 
-  return <div ref={terminalRef} style={{ height: '400px', width: '100%' }} />
+  return <div ref={terminalRef} style={{ height: '400px', width: '740px' }} />
 }
 
 export default TerminalComponent
