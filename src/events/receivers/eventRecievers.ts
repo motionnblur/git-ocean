@@ -14,7 +14,7 @@ let ptyProcess: pty.IPty | null = null
 ipcMain.on('start-shell', (event) => {
   ptyProcess = pty.spawn('/bin/bash', [], {
     name: 'xterm-256color',
-    cwd: os.homedir(),
+    cwd: memory.currentGitDirectory,
     env: process.env
   })
 
