@@ -3,38 +3,9 @@
  * Copyright (c) 2012-2013, Christopher Jeffrey (MIT License)
  * https://github.com/chjj/term.js
  * @license MIT
- *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- *
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- *
- * Originally forked from (with the author's permission):
- *   Fabrice Bellard's javascript vt100 for jslinux:
- *   http://bellard.org/jslinux/
- *   Copyright (c) 2011 Fabrice Bellard
- *   The original design remains. The terminal itself
- *   has been extended to include xterm CSI codes, among
- *   other features.
  */
 
-/**
- *  Default styles for xterm.js
- */
-
+/* Original xterm.js styles */
 .xterm {
   cursor: text;
   position: relative;
@@ -51,10 +22,6 @@
 .xterm .xterm-helpers {
   position: absolute;
   top: 0;
-  /**
-     * The z-index of the helpers must be higher than the canvases in order for
-     * IMEs to appear on top.
-     */
   z-index: 5;
 }
 
@@ -62,7 +29,6 @@
   padding: 0;
   border: 0;
   margin: 0;
-  /* Move textarea out of the screen to the far left, so that the cursor is not visible */
   position: absolute;
   opacity: 0;
   left: -9999em;
@@ -70,14 +36,12 @@
   width: 0;
   height: 0;
   z-index: -5;
-  /** Prevent wrapping so the IME appears against the textarea at the correct position */
   white-space: nowrap;
   overflow: hidden;
   resize: none;
 }
 
 .xterm .composition-view {
-  /* TODO: Composition position got messed up somewhere */
   background: #000;
   color: #fff;
   display: none;
@@ -91,15 +55,18 @@
 }
 
 .xterm .xterm-viewport {
-  /* On OS X this is required in order for the scroll bar to appear fully opaque */
   background-color: #000;
-  overflow-y: scroll;
+  overflow-y: auto;
   cursor: default;
   position: absolute;
   right: 0;
   left: 0;
   top: 0;
   bottom: 0;
+
+  /* Firefox scrollbar support */
+  scrollbar-width: thin;
+  scrollbar-color: #555 #1e1e1e;
 }
 
 .xterm .xterm-screen {
@@ -122,7 +89,6 @@
 }
 
 .xterm.enable-mouse-events {
-  /* When mouse events are enabled (eg. tmux), revert to the standard pointer cursor */
   cursor: default;
 }
 
@@ -132,7 +98,6 @@
 }
 
 .xterm.column-select.focus {
-  /* Column selection mode */
   cursor: crosshair;
 }
 
@@ -172,8 +137,6 @@
 }
 
 .xterm-dim {
-  /* Dim should not apply to background, so the opacity of the foreground color is applied
-     * explicitly in the generated class and reset to 1 here */
   opacity: 1 !important;
 }
 
@@ -241,12 +204,10 @@
 
 /* Derived from vs/base/browser/ui/scrollbar/media/scrollbar.css */
 
-/* xterm.js customization: Override xterm's cursor style */
 .xterm .xterm-scrollable-element > .scrollbar {
   cursor: default;
 }
 
-/* Arrows */
 .xterm .xterm-scrollable-element > .scrollbar > .scra {
   cursor: pointer;
   font-size: 11px !important;
@@ -254,12 +215,8 @@
 
 .xterm .xterm-scrollable-element > .visible {
   opacity: 1;
-
-  /* Background rule added for IE9 - to allow clicks on dom node */
   background: rgba(0, 0, 0, 0);
-
   transition: opacity 100ms linear;
-  /* In front of peek view */
   z-index: 11;
 }
 .xterm .xterm-scrollable-element > .invisible {
@@ -270,7 +227,6 @@
   transition: opacity 800ms linear;
 }
 
-/* Scrollable Content Inset Shadow */
 .xterm .xterm-scrollable-element > .shadow {
   position: absolute;
   display: none;
@@ -300,4 +256,40 @@
 }
 .xterm .xterm-scrollable-element > .shadow.top.left {
   box-shadow: var(--vscode-scrollbar-shadow, #000) 6px 0 6px -6px inset;
+}
+
+/* Custom modern dark and small scrollbar styles */
+.xterm .xterm-viewport::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-track {
+  background: #1e1e1e;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  background-color: #555;
+  border-radius: 4px;
+  border: 1px solid #333;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar-thumb:hover {
+  background-color: #777;
+}
+
+/* Auto-hide scrollbar (webkit only, works in Chrome/Edge/Safari) */
+.xterm .xterm-viewport {
+  scrollbar-gutter: stable;
+}
+
+.xterm .xterm-viewport::-webkit-scrollbar {
+  transition: opacity 0.3s;
+}
+.xterm .xterm-viewport::-webkit-scrollbar-thumb {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.xterm .xterm-viewport:hover::-webkit-scrollbar-thumb {
+  opacity: 1;
 }
