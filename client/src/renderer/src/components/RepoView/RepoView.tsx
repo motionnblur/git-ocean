@@ -63,12 +63,19 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
           },
           overflowX: 'hidden',
           scrollbarWidth: 'thin', // Firefox
+          scrollbarColor: '#5e5e5e transparent', // Firefox (thumb and track)
           '&::-webkit-scrollbar': {
             width: '6px'
           },
           '&::-webkit-scrollbar-thumb': {
-            backgroundColor: '#888',
-            borderRadius: '4px'
+            backgroundColor: '#5e5e5e',
+            borderRadius: '10px',
+            border: '2px solid transparent',
+            backgroundClip: 'content-box',
+            transition: 'background-color 0.3s ease'
+          },
+          '&::-webkit-scrollbar-thumb:hover': {
+            backgroundColor: '#888'
           },
           '&::-webkit-scrollbar-track': {
             backgroundColor: 'transparent'
