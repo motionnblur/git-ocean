@@ -17,10 +17,10 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
 
   const onItemClick = (index: number): void => {
     setSelectedGitCommitIndex(index)
-    setSelectedGitCommitData(_repoData[index])
+    setSelectedGitCommitData(repoData[index])
     eventManager.trigger('update-commit-index', index)
     eventManager.trigger('open-commit-window')
-    eventManager.trigger('commit-message', _repoData[index].commitName)
+    eventManager.trigger('commit-message', repoData[index].commitName)
 
     if (index === 0) {
       eventManager.trigger('open-drop-commit-button')
@@ -36,7 +36,10 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
 
   useEffect(() => {
     const refreshRepoView = setInterval(async () => {
+      //
+      //
       const refreshedRepoData = await window.electron.handleGetRepoData()
+      console.log(refreshedRepoData)
       if (JSON.stringify(repoData) !== JSON.stringify(refreshedRepoData)) {
         setRepoData(refreshedRepoData)
       }
