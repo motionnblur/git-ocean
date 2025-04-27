@@ -58,6 +58,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
           height: '400px',
           backgroundColor: 'black',
           overflow: 'hidden',
+          borderRadius: '6px',
           '&:hover': {
             overflowY: 'auto'
           },
