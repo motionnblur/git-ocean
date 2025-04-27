@@ -3,8 +3,6 @@ import { Terminal } from '@xterm/xterm'
 import '../../assets/xterm.css'
 const ipcRenderer = window.electron.ipcRenderer
 
-let terminalText = ''
-
 const TerminalComponent: React.FC = () => {
   const terminalRef = useRef<HTMLDivElement | null>(null)
   const term = useRef<Terminal | null>(null)
@@ -19,10 +17,6 @@ const TerminalComponent: React.FC = () => {
       term.current?.writeln(`\r\nProcess exited with code ${code}`)
     }
 
-    const handleCwdUpdated = (newCwd: string): void => {
-      console.log('New CWD:', newCwd)
-    }
-
     if (terminalRef.current) {
       term.current = new Terminal({
         cols: 80,
@@ -34,19 +28,15 @@ const TerminalComponent: React.FC = () => {
       ipcRenderer.send('start-shell')
 
       term.current.onData((data) => {
-        //terminalText += data
-        //term.current?.write(data) // Echo typed characters
         ipcRenderer.send('send-shell-input', data)
       })
 
       window.electron.onCommandOutput(handleOutput)
       window.electron.onCommandExit(handleExit)
-      window.electron.onCwdUpdated(handleCwdUpdated)
 
       return () => {
-        window.electron.offCommandOutput(handleOutput)
-        window.electron.offCommandExit(handleExit)
-        window.electron.offCwdUpdated(handleCwdUpdated)
+        //window.electron.offCommandOutput(handleOutput)
+        //window.electron.offCommandExit(handleExit)
         term.current?.dispose()
       }
     }

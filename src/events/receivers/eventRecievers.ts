@@ -12,26 +12,24 @@ import * as os from 'os'
 let ptyProcess: pty.IPty | null = null
 
 ipcMain.on('start-shell', (event) => {
-  if (!ptyProcess) {
-    ptyProcess = pty.spawn('/bin/bash', [], {
-      name: 'xterm-256color',
-      cwd: os.homedir(),
-      env: process.env
-    })
+  ptyProcess = pty.spawn('/bin/bash', [], {
+    name: 'xterm-256color',
+    cwd: os.homedir(),
+    env: process.env
+  })
 
-    ptyProcess.on('data', (data) => {
-      event.sender.send('command-output', data)
-    })
+  ptyProcess.on('data', (data) => {
+    event.sender.send('command-output', data)
+  })
 
-    ptyProcess.on('exit', (code) => {
-      event.sender.send('command-exit', code)
-      ptyProcess = null
-    })
+  ptyProcess.on('exit', (code) => {
+    event.sender.send('command-exit', code)
+    ptyProcess = null
+  })
 
-    ptyProcess.on('error', (err) => {
-      event.sender.send('command-output', `Error: ${err.message}`)
-    })
-  }
+  ptyProcess.on('error', (err) => {
+    event.sender.send('command-output', `Error: ${err.message}`)
+  })
 })
 ipcMain.on('send-shell-input', (_event, input: string) => {
   ptyProcess?.write(input)
