@@ -17,7 +17,7 @@ export default function WindowCenter(): JSX.Element {
   const handleRepoViewEvent = (repoData: any): void => {
     //console.log(repoData)
     _repoData = repoData
-    setRepoViewOpen((prev) => !prev)
+    setRepoViewOpen(true)
   }
 
   useEffect(() => {
