@@ -55,11 +55,9 @@ export default function CommitWindow(): JSX.Element {
     }
   } ///
   const squashCommitsHandler = async (): Promise<void> => {
-    //
     try {
       await window.electron.squashCommits(getSelectedGitCommitIndex(), value)
-      const repoData = await window.electron.handleGetRepoData()
-      eventManager.trigger('refresh-repo-view', repoData)
+      eventManager.trigger('on-squash-commits-button-click')
     } catch (error) {
       console.error('Error squashing commits:', error)
     }

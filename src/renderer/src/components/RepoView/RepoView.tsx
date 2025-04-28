@@ -42,6 +42,10 @@ export default function RepoView(): JSX.Element {
     const repoData = await window.electron.ipcRenderer.invoke('get-repo-data')
     setRepoData(repoData)
   }
+  const onSquashCommitsButtonClickHandler = async (): Promise<void> => {
+    const repoData = await window.electron.ipcRenderer.invoke('get-repo-data')
+    setRepoData(repoData)
+  }
 
   useEffect(() => {
     if (isFirstRender.current) {
@@ -55,9 +59,11 @@ export default function RepoView(): JSX.Element {
 
     eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
     eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+    eventManager.on('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
     return () => {
       eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
       eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+      eventManager.off('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
     }
   }, [])
 

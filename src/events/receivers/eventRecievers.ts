@@ -126,19 +126,19 @@ export const eventReceiver = (data: any): void => {
     } catch (err) {
       console.error('Failed to drop last commit:', err)
       // Optionally notify the renderer process:
-      event.reply('remove-last-commit-error', err.message || 'Unknown error')
+      event.reply('remove-last-commit-error', err.message || 'Unknown error') //
     }
   })
 
   ipcMain.on('squash-commits', async (event, numberToSquash, newCommitMessage) => {
+    //
+    //
+    // eslint-disable-next-line no-useless-catch
     try {
       await squashCommits(execPromise, numberToSquash, newCommitMessage)
-      // You can optionally send back a success message:
-      event.reply('squash-commits-success', 'Commits have been squashed.')
+      memory.repoData = await getGitCommitData(execPromise, memory.currentGitDirectory)
     } catch (err) {
-      console.error('Failed to squash commits:', err)
-      // Optionally notify the renderer process:
-      event.reply('squash-commits-error', err.message || 'Unknown error')
+      throw err
     }
   })
   ipcMain.handle('save-repo-data-to-memory', async (event, data): Promise<boolean> => {
