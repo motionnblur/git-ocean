@@ -13,14 +13,15 @@ export interface RepoItem {
 
 export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.Element {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
-  const [repoData, setRepoData] = useState(_repoData)
 
   const onItemClick = (index: number): void => {
+    if (selectedItemIndex === index) return
+
     setSelectedGitCommitIndex(index)
-    setSelectedGitCommitData(repoData[index])
+    setSelectedGitCommitData(_repoData[index])
     eventManager.trigger('update-commit-index', index)
+    eventManager.trigger('update-commit-window-text', _repoData[index].commitName)
     eventManager.trigger('open-commit-window')
-    eventManager.trigger('commit-message', repoData[index].commitName)
 
     if (index === 0) {
       eventManager.trigger('open-drop-commit-button')
@@ -29,24 +30,6 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
     }
     setSelectedItemIndex(index)
   }
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleRefreshRepoView = (data: any): void => {
-    setRepoData(data)
-  }
-
-  useEffect(() => {
-    const refreshRepoView = setInterval(async () => {
-      const refreshedRepoData = await window.electron.handleGetRepoData()
-      if (JSON.stringify(repoData) !== JSON.stringify(refreshedRepoData)) {
-        setRepoData(refreshedRepoData)
-      }
-    }, 1000 * 5)
-    eventManager.on('refresh-repo-view', handleRefreshRepoView)
-    return () => {
-      clearInterval(refreshRepoView)
-      eventManager.off('refresh-repo-view', handleRefreshRepoView)
-    }
-  }, [])
 
   return (
     <Box
@@ -90,7 +73,7 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
           }
         }}
       >
-        {repoData.map((item, index) => (
+        {_repoData.map((item, index) => (
           <ListItem key={index} disablePadding>
             <div
               className={selectedItemIndex === index ? 'list-item-on' : 'list-item-off'}

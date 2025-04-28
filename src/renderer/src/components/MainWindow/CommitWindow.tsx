@@ -1,4 +1,4 @@
-import { Box, Button, Stack, TextareaAutosize, TextField } from '@mui/material'
+import { Box, Button, Stack, TextareaAutosize } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
@@ -23,10 +23,21 @@ export default function CommitWindow(): JSX.Element {
     commitData.commitName = value
     setSelectedGitCommitData(commitData)
 
-    await window.electron.changeGitCommitName(getSelectedGitCommitData())
+    try {
+      const success: boolean = await window.electron.ipcRenderer.invoke(
+        'change-git-commit-name',
+        commitData
+      )
+      if (!success) {
+        throw new Error('Failed to change commit name')
+      }
 
-    const repoData = await window.electron.handleGetRepoData()
-    eventManager.trigger('refresh-repo-view', repoData)
+      const repoData = await window.electron.handleGetRepoData()
+      eventManager.trigger('update-commit-window-text', value)
+      eventManager.trigger('refresh-repo-view', repoData)
+    } catch (error) {
+      console.error('Error changing commit name:', error)
+    }
   }
   const dropLastCommitHandler = async (): Promise<void> => {
     await window.electron.dropLastCommit()
@@ -60,12 +71,12 @@ export default function CommitWindow(): JSX.Element {
   }
 
   useEffect(() => {
-    eventManager.on('commit-message', commitMessageHandler)
+    eventManager.on('update-commit-window-text', commitMessageHandler)
     eventManager.on('open-drop-commit-button', openDropCommitButtonHandler)
     eventManager.on('close-drop-commit-button', closeDropCommitButtonHandler)
     eventManager.on('update-commit-index', updateCommitIndexHandler)
     return () => {
-      eventManager.off('commit-message', commitMessageHandler)
+      eventManager.off('update-commit-window-text', commitMessageHandler)
       eventManager.off('open-drop-commit-button', openDropCommitButtonHandler)
       eventManager.off('close-drop-commit-button', closeDropCommitButtonHandler)
       eventManager.off('update-commit-index', updateCommitIndexHandler)
