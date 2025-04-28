@@ -1,6 +1,10 @@
 export interface IRepoItem {
-  name: string
+  commitData: string
+  commitName: string
+  authorData: string
+  dateData: string
 }
+
 export interface IRepo {
   items: IRepoItem[]
 }
@@ -8,6 +12,7 @@ export interface IMemory {
   isFileDialogOpen: boolean
   repo: IRepo
   currentGitDirectory: string
+  repoData: IRepoItem[]
 }
 
 export const memory: IMemory = {
@@ -15,5 +20,6 @@ export const memory: IMemory = {
   repo: {
     items: []
   },
-  currentGitDirectory: ''
+  currentGitDirectory: '',
+  repoData: []
 }

@@ -11,9 +11,13 @@ export class FileService {
         const isGitRepo = await ipcRenderer.invoke('check-git-repo', folderPath)
         if (isGitRepo) {
           const gitRepoData = await ipcRenderer.invoke('get-repo-data', folderPath)
-          eventManager.trigger('on-git-data-update', gitRepoData)
-          this.gitFolderPath = folderPath
+          const success: boolean = await ipcRenderer.invoke('save-repo-data-to-memory', gitRepoData)
+          if (!success) {
+            throw new Error('Failed to save repo data to memory')
+          }
+
           eventManager.trigger('open-git-folder', folderPath)
+          eventManager.trigger('on-git-folder-open')
         } else {
           alert('This is NOT a Git repository.')
           console.warn('This is NOT a Git repository.')

@@ -7,26 +7,23 @@ import TerminalComponent from './TerminalComponent'
 export default function WindowCenter(): JSX.Element {
   const [terminalOpen, setTerminalOpen] = useState<boolean>(false)
   const [repoViewOpen, setRepoViewOpen] = useState<boolean>(false)
-  const [repoData, setRepoData] = useState([])
 
   const openTerminalEvent = (): void => {
     setTerminalOpen((prev) => !prev)
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleOnGitDatUpdate = (repoData: any): void => {
+  const handleOnGitFolderOpen = (): void => {
     if (!repoViewOpen) {
       setRepoViewOpen(true)
     }
-
-    setRepoData(repoData)
   }
 
   useEffect(() => {
-    eventManager.on('on-git-data-update', handleOnGitDatUpdate)
+    eventManager.on('on-git-folder-open', handleOnGitFolderOpen)
     eventManager.on('open-terminal', openTerminalEvent)
 
     return () => {
-      eventManager.off('on-git-data-update', handleOnGitDatUpdate)
+      eventManager.off('on-git-folder-open', handleOnGitFolderOpen)
       eventManager.off('open-terminal', openTerminalEvent)
     }
   }, [])
@@ -34,7 +31,7 @@ export default function WindowCenter(): JSX.Element {
   return (
     <Box sx={{ flexGrow: 1, backgroundColor: '#393E46' }}>
       {terminalOpen && <TerminalComponent />}
-      {repoViewOpen && <RepoView _repoData={repoData} />}
+      {repoViewOpen && <RepoView />}
     </Box>
   )
 }

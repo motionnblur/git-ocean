@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { memory } from '../../classes/Memory'
+import { IRepoItem, memory } from '../../classes/Memory'
 import {
   changeGitCommitName,
   dropLastCommit,
@@ -109,6 +109,7 @@ export const eventReceiver = (data: any): void => {
   ipcMain.handle('change-git-commit-name', async (event, data) => {
     try {
       await changeGitCommitName(execPromise, data.commitData, data.commitName)
+      memory.repoData = await getGitCommitData(execPromise, memory.currentGitDirectory)
       // You can optionally send back a success message:
       return { success: true }
     } catch (err) {
@@ -139,5 +140,16 @@ export const eventReceiver = (data: any): void => {
       // Optionally notify the renderer process:
       event.reply('squash-commits-error', err.message || 'Unknown error')
     }
+  })
+  ipcMain.handle('save-repo-data-to-memory', async (event, data): Promise<boolean> => {
+    memory.repoData = data
+    if (memory.repoData) {
+      return true
+    } else {
+      return false
+    }
+  })
+  ipcMain.handle('get-repo-data-from-memory', async () => {
+    return memory.repoData
   })
 }

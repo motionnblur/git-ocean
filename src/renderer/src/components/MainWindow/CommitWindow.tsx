@@ -32,9 +32,7 @@ export default function CommitWindow(): JSX.Element {
         throw new Error('Failed to change commit name')
       }
 
-      const repoData = await window.electron.handleGetRepoData()
-      eventManager.trigger('update-commit-window-text', value)
-      eventManager.trigger('refresh-repo-view', repoData)
+      eventManager.trigger('on-update-message-button-click')
     } catch (error) {
       console.error('Error changing commit name:', error)
     }
@@ -45,9 +43,6 @@ export default function CommitWindow(): JSX.Element {
   const openDropCommitButtonHandler = (): void => {
     setOpenDropCommitButton(true)
   }
-  /**
-   * Handler for the close-drop-commit-button event. Sets openDropCommitButton to false.
-   */
 
   const closeDropCommitButtonHandler = (): void => {
     setOpenDropCommitButton(false)

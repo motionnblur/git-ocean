@@ -1,7 +1,7 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import { setSelectedGitCommitData, setSelectedGitCommitIndex } from '@renderer/class/LocalMemory'
-import { JSX, useEffect, useState } from 'react'
+import { JSX, useEffect, useRef, useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
 export interface RepoItem {
@@ -10,9 +10,11 @@ export interface RepoItem {
   authorData: string
   dateData: string
 }
+export default function RepoView(): JSX.Element {
+  const isFirstRender = useRef(true)
 
-export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.Element {
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
+  const [_repoData, setRepoData] = useState<RepoItem[]>([])
 
   const onItemClick = (index: number): void => {
     if (selectedItemIndex === index) return
@@ -26,10 +28,38 @@ export default function RepoView({ _repoData }: { _repoData: RepoItem[] }): JSX.
     if (index === 0) {
       eventManager.trigger('open-drop-commit-button')
     } else {
-      eventManager.trigger('close-drop-commit-button')
+      eventManager.trigger('close-drop-commit-button') //
     }
     setSelectedItemIndex(index)
   }
+
+  const onGitFolderOpenHandler = (): void => {
+    window.electron.ipcRenderer.invoke('get-repo-data-from-memory').then((repoData: RepoItem[]) => {
+      setRepoData(repoData)
+    })
+  }
+  const onUpdateMessageButtonClickHandler = async (): Promise<void> => {
+    const repoData = await window.electron.ipcRenderer.invoke('get-repo-data')
+    setRepoData(repoData)
+  }
+
+  useEffect(() => {
+    if (isFirstRender.current) {
+      window.electron.ipcRenderer
+        .invoke('get-repo-data-from-memory')
+        .then((repoData: RepoItem[]) => {
+          isFirstRender.current = false
+          setRepoData(repoData)
+        })
+    }
+
+    eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
+    eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+    return () => {
+      eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
+      eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+    }
+  }, [])
 
   return (
     <Box
