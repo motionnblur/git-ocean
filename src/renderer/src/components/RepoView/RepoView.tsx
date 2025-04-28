@@ -60,7 +60,14 @@ export default function RepoView(): JSX.Element {
     eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
     eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
     eventManager.on('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
+    const refreshRepoView = setInterval(async () => {
+      const refreshedRepoData = await window.electron.handleGetRepoData()
+      if (JSON.stringify(_repoData) !== JSON.stringify(refreshedRepoData)) {
+        setRepoData(refreshedRepoData)
+      }
+    }, 1000 * 10)
     return () => {
+      clearInterval(refreshRepoView)
       eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
       eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
       eventManager.off('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
