@@ -14,18 +14,17 @@ export default function WindowCenter(): JSX.Element {
     setTerminalOpen((prev) => !prev)
   }
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const handleRepoViewEvent = (repoData: any): void => {
-    //console.log(repoData)
+  const handleOnGitDatUpdate = (repoData: any): void => {
     _repoData = repoData
     setRepoViewOpen(true)
   }
 
   useEffect(() => {
-    window.electron.onRepoViewOpen(handleRepoViewEvent)
-
+    eventManager.on('on-git-data-update', handleOnGitDatUpdate)
     eventManager.on('open-terminal', openTerminalEvent)
 
     return () => {
+      eventManager.off('on-git-data-update', handleOnGitDatUpdate)
       eventManager.off('open-terminal', openTerminalEvent)
     }
   }, [])

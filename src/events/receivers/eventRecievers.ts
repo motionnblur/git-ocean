@@ -60,9 +60,6 @@ export const eventReceiver = (data: any): void => {
       const { stdout } = await execPromise('git rev-parse --is-inside-work-tree', {
         cwd: folderPath
       })
-      const commitData = await getGitCommitData(execPromise, folderPath)
-      //console.log(commitData)
-      _event.sender.send('repo-view-open', commitData)
       return stdout.trim() === 'true'
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

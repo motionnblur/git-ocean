@@ -16,7 +16,7 @@ export default function MenuBar(): JSX.Element {
     setFolderName(gitFolderName)
   }
   useEffect(() => {
-    eventManager.on('git-folder', onGitFolderEvent)
+    eventManager.on('open-git-folder', onGitFolderEvent)
   }, [])
   return (
     <Box sx={{ width: '100%', backgroundColor: '#0b305d' }}>
