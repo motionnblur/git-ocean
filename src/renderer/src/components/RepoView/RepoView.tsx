@@ -72,6 +72,7 @@ export default function RepoView(): JSX.Element {
     const newRepoData = currentRepoData.splice(1)
     setSelectedGitCommitIndex(0)
     setSelectedGitCommitData(newRepoData[0])
+    eventManager.trigger('update-commit-window-text', newRepoData[0].commitName)
     setRepoData([...newRepoData])
   }
 
