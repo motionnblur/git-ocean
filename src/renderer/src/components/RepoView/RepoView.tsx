@@ -54,7 +54,7 @@ export default function RepoView(): JSX.Element {
     const newRepoData = repodataRef.current.splice(squashData.numberToSquash)
 
     setSelectedGitCommitIndex(0)
-    setSelectedGitCommitData(squashData.newCommitMessage)
+    //setSelectedGitCommitData(squashData.newCommitMessage)
     newRepoData[0].commitName = squashData.newCommitMessage
     setRepoData(newRepoData)
     setSelectedItemIndex(0)
