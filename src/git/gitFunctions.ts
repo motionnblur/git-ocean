@@ -100,7 +100,9 @@ export const changeGitCommitName = async (
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const dropLastCommit = async (execPromise: any): Promise<void> => {
   try {
-    await execPromise('git reset --hard HEAD^')
+    await execPromise('git reset --hard HEAD^', {
+      cwd: memory.currentGitDirectory
+    })
     console.log('Last commit has been dropped.')
   } catch (err) {
     console.error('Failed to drop last commit:', err)
