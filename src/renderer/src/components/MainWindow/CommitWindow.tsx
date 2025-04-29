@@ -32,6 +32,7 @@ export default function CommitWindow(): JSX.Element {
   }
   const dropLastCommitHandler = async (): Promise<void> => {
     await window.electron.dropLastCommit()
+    eventManager.trigger('on-drop-commits-button-click')
   }
   const openDropCommitButtonHandler = (): void => {
     setOpenDropCommitButton(true)

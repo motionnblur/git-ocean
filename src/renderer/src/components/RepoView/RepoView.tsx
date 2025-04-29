@@ -67,6 +67,13 @@ export default function RepoView(): JSX.Element {
     eventManager.trigger('update-commit-index', 0)
     eventManager.trigger('update-commit-window-text', squashData.newCommitMessage)
   }
+  const onDropCommitsButtonClickHandler = async (): Promise<void> => {
+    const currentRepoData = repodataRef.current
+    const newRepoData = currentRepoData.splice(1)
+    setSelectedGitCommitIndex(0)
+    setSelectedGitCommitData(newRepoData[0])
+    setRepoData([...newRepoData])
+  }
 
   useEffect(() => {
     repodataRef.current = _repoData
@@ -84,6 +91,7 @@ export default function RepoView(): JSX.Element {
     eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
     eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
     eventManager.on('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
+    eventManager.on('on-drop-commits-button-click', onDropCommitsButtonClickHandler)
     const refreshRepoView = setInterval(async () => {
       const refreshedRepoData = await window.electron.handleGetRepoData()
       if (JSON.stringify(_repoData) !== JSON.stringify(refreshedRepoData)) {
@@ -95,6 +103,7 @@ export default function RepoView(): JSX.Element {
       eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
       eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
       eventManager.off('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
+      eventManager.off('on-drop-commits-button-click', onDropCommitsButtonClickHandler)
     }
   }, [])
 
