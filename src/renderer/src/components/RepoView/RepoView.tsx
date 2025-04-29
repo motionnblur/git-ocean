@@ -3,6 +3,7 @@ import { eventManager } from '@renderer/class/EventManager'
 import {
   CommitData,
   getSelectedGitCommitData,
+  getSelectedGitCommitIndex,
   setSelectedGitCommitData,
   setSelectedGitCommitIndex
 } from '@renderer/class/LocalMemory'
@@ -48,8 +49,8 @@ export default function RepoView(): JSX.Element {
 
   const onUpdateMessageButtonClickHandler = async (): Promise<void> => {
     try {
-      const commitData: CommitData = getSelectedGitCommitData()
-      console.log(commitData)
+      const currentRepoData = repodataRef.current
+      setRepoData([...currentRepoData])
     } catch (error) {
       console.error('Error updating commit name:', error)
     }
