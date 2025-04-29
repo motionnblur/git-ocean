@@ -29,7 +29,7 @@ export const changeGitCommitName = async (
   commitHash: string,
   commitName: string
 ): Promise<void> => {
-  const currentDir = process.cwd()
+  const currentDir = memory.currentGitDirectory
 
   const rebaseTodoList = `
 edit ${commitHash}
@@ -38,12 +38,18 @@ edit ${commitHash}
 
   // Step 1: Start the git rebase process (but don't try to write the todo list yet)
   try {
-    await execPromise(`git rebase -i ${commitHash}^`, {
-      env: {
-        ...process.env,
-        GIT_SEQUENCE_EDITOR: `sed -i '1s/^pick /edit /'`
+    await execPromise(
+      `git rebase -i ${commitHash}^`,
+      {
+        env: {
+          ...process.env,
+          GIT_SEQUENCE_EDITOR: `sed -i '1s/^pick /edit /'`
+        }
+      },
+      {
+        cwd: currentDir
       }
-    })
+    )
 
     const rebaseTodoPath = path.join(
       memory.currentGitDirectory,
@@ -79,12 +85,14 @@ edit ${commitHash}
       console.log('Updated rebase todo list:\n', updatedContent)
 
       const sanitizedCommitName = commitName.replace(/"/g, '\\"')
-      await execPromise(`git commit --amend --allow-empty -am "${sanitizedCommitName}"`)
+      await execPromise(`git commit --amend --allow-empty -am "${sanitizedCommitName}"`, {
+        cwd: currentDir
+      })
 
-      await execPromise('git rebase --continue')
+      await execPromise('git rebase --continue', { cwd: currentDir })
 
       try {
-        const result = await execPromise('git symbolic-ref --short -q HEAD')
+        const result = await execPromise('git symbolic-ref --short -q HEAD', { cwd: currentDir })
         const branchName =
           typeof result === 'string' ? result.trim() : (result.stdout?.trim?.() ?? '')
 
@@ -121,8 +129,10 @@ export const squashCommits = async (
   newCommitMessage: string
 ): Promise<void> => {
   try {
-    await execPromise(`git reset --soft HEAD~${numberToSquash + 1}`) // aaa
-    await execPromise(`git commit -m "${newCommitMessage}"`)
+    await execPromise(`git reset --soft HEAD~${numberToSquash + 1}`, {
+      cwd: memory.currentGitDirectory
+    }) // aaa
+    await execPromise(`git commit -m "${newCommitMessage}"`, { cwd: memory.currentGitDirectory })
   } catch (err) {
     console.error('Failed to squash commits:', err)
   }

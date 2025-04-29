@@ -21,6 +21,7 @@ export default function RepoView(): JSX.Element {
 
     setSelectedGitCommitIndex(index)
     setSelectedGitCommitData(_repoData[index])
+
     eventManager.trigger('update-commit-index', index)
     eventManager.trigger('update-commit-window-text', _repoData[index].commitName)
     eventManager.trigger('open-commit-window')
@@ -38,13 +39,15 @@ export default function RepoView(): JSX.Element {
       setRepoData(repoData)
     })
   }
-  const onUpdateMessageButtonClickHandler = async (): Promise<void> => {
-    const repoData = await window.electron.ipcRenderer.invoke('get-repo-data')
+
+  const refleshRepoUi = async (): Promise<void> => {
+    const repoData = await window.electron.handleGetRepoData()
+
+    setSelectedGitCommitIndex(0)
+    setSelectedGitCommitData(repoData[0])
+
     setRepoData(repoData)
-  }
-  const onSquashCommitsButtonClickHandler = async (): Promise<void> => {
-    const repoData = await window.electron.ipcRenderer.invoke('get-repo-data')
-    setRepoData(repoData)
+    setSelectedItemIndex(0)
   }
 
   useEffect(() => {
@@ -58,8 +61,8 @@ export default function RepoView(): JSX.Element {
     }
 
     eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
-    eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
-    eventManager.on('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
+    eventManager.on('on-update-message-button-click', refleshRepoUi)
+    eventManager.on('on-squash-commits-button-click', refleshRepoUi)
     const refreshRepoView = setInterval(async () => {
       const refreshedRepoData = await window.electron.handleGetRepoData()
       if (JSON.stringify(_repoData) !== JSON.stringify(refreshedRepoData)) {
@@ -69,8 +72,8 @@ export default function RepoView(): JSX.Element {
     return () => {
       clearInterval(refreshRepoView)
       eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
-      eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
-      eventManager.off('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
+      eventManager.off('on-update-message-button-click', refleshRepoUi)
+      eventManager.off('on-squash-commits-button-click', refleshRepoUi)
     }
   }, [])
 
