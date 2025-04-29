@@ -1,12 +1,6 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
-import {
-  CommitData,
-  getSelectedGitCommitData,
-  getSelectedGitCommitIndex,
-  setSelectedGitCommitData,
-  setSelectedGitCommitIndex
-} from '@renderer/class/LocalMemory'
+import { setSelectedGitCommitData, setSelectedGitCommitIndex } from '@renderer/class/LocalMemory'
 import { JSX, useEffect, useRef, useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic

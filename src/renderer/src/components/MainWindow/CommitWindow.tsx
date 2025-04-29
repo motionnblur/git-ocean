@@ -57,6 +57,11 @@ export default function CommitWindow(): JSX.Element {
   }
 
   useEffect(() => {
+    const firstCommitIndex = getSelectedGitCommitIndex()
+    if (firstCommitIndex > 0) {
+      if (!openSquashCommitsButton) setOpenSquashCommitsButton(true)
+    }
+
     eventManager.on('update-commit-window-text', commitMessageHandler)
     eventManager.on('open-drop-commit-button', openDropCommitButtonHandler)
     eventManager.on('close-drop-commit-button', closeDropCommitButtonHandler)
