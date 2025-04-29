@@ -2,6 +2,7 @@ import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
 import {
   getSelectedGitCommitData,
+  getSelectedGitCommitIndex,
   setSelectedGitCommitData,
   setSelectedGitCommitIndex
 } from '@renderer/class/LocalMemory'
@@ -48,7 +49,8 @@ export default function RepoView(): JSX.Element {
   const onUpdateMessageButtonClickHandler = async (): Promise<void> => {
     try {
       const currentRepoData = repodataRef.current
-      currentRepoData[0].commitName = getSelectedGitCommitData().commitName
+      const selectedCommitIndex = getSelectedGitCommitIndex()
+      currentRepoData[selectedCommitIndex].commitName = getSelectedGitCommitData().commitName
       setRepoData([...currentRepoData])
     } catch (error) {
       console.error('Error updating commit name:', error)
