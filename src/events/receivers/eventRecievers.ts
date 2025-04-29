@@ -1,5 +1,5 @@
 import { ipcMain } from 'electron'
-import { IRepoItem, memory } from '../../classes/Memory'
+import { IRepoItem, ISquash, memory } from '../../memory/Memory'
 import {
   changeGitCommitName,
   dropLastCommit,
@@ -110,8 +110,8 @@ export const eventReceiver = (data: any): void => {
     try {
       await changeGitCommitName(execPromise, data.commitData, data.commitName)
       memory.repoData = await getGitCommitData(execPromise, memory.currentGitDirectory)
-      // You can optionally send back a success message:
-      return { success: true }
+
+      return true
     } catch (err) {
       console.error('Failed to change commit message:', err)
       // Optionally notify the renderer process:
@@ -130,14 +130,16 @@ export const eventReceiver = (data: any): void => {
     }
   })
 
-  ipcMain.on('squash-commits', async (event, numberToSquash, newCommitMessage) => {
-    //
-    //
+  ipcMain.handle('squash-commits', async (event, numberToSquash, newCommitMessage) => {
     // eslint-disable-next-line no-useless-catch
     try {
       await squashCommits(execPromise, numberToSquash, newCommitMessage)
-      memory.repoData = await getGitCommitData(execPromise, memory.currentGitDirectory)
+      //memory.repoData = await getGitCommitData(execPromise, memory.currentGitDirectory)
+      memory.squash.numberToSquash = numberToSquash
+      memory.squash.newCommitMessage = newCommitMessage
+      return true
     } catch (err) {
+      console.error('Failed to squash commits:', err)
       throw err
     }
   })
@@ -149,7 +151,10 @@ export const eventReceiver = (data: any): void => {
       return false
     }
   })
-  ipcMain.handle('get-repo-data-from-memory', async () => {
+  ipcMain.handle('get-repo-data-from-memory', async (): Promise<IRepoItem[]> => {
     return memory.repoData
+  })
+  ipcMain.handle('get-squash-data-from-memory', async (): Promise<ISquash> => {
+    return memory.squash
   })
 }

@@ -1,18 +1,22 @@
-export interface IRepoItem {
+interface IRepoItem {
   commitData: string
   commitName: string
   authorData: string
   dateData: string
 }
-
-export interface IRepo {
+interface IRepo {
   items: IRepoItem[]
 }
-export interface IMemory {
+interface IMemory {
   isFileDialogOpen: boolean
   repo: IRepo
   currentGitDirectory: string
   repoData: IRepoItem[]
+  squash: ISquash
+}
+export interface ISquash {
+  numberToSquash: number
+  newCommitMessage: string
 }
 
 export const memory: IMemory = {
@@ -21,5 +25,9 @@ export const memory: IMemory = {
     items: []
   },
   currentGitDirectory: '',
-  repoData: []
+  repoData: [],
+  squash: {
+    numberToSquash: 0,
+    newCommitMessage: ''
+  }
 }

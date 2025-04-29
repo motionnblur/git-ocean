@@ -3,7 +3,6 @@ export interface ICustomCommandAPI {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onCommandOutput: (callback: (data: string) => void) => () => void // Returns cleanup function
   onCommandExit: (callback: (code: number | null) => void) => () => void // Returns cleanup function
-  onCommandExit: (callback: (code: number | null) => void) => () => void
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onRepoViewOpen: (callback: (data: any) => void) => () => void
   systemInfo: {

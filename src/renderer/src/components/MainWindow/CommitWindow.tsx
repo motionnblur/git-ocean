@@ -24,14 +24,7 @@ export default function CommitWindow(): JSX.Element {
     setSelectedGitCommitData(commitData)
 
     try {
-      const success: boolean = await window.electron.ipcRenderer.invoke(
-        'change-git-commit-name',
-        commitData
-      )
-      if (!success) {
-        throw new Error('Failed to change commit name')
-      }
-
+      await window.electron.ipcRenderer.invoke('change-git-commit-name', commitData)
       eventManager.trigger('on-update-message-button-click')
     } catch (error) {
       console.error('Error changing commit name:', error)

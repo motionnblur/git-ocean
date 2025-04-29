@@ -6,9 +6,8 @@ const customCommandAPI = {
   // Function to send a command to the main process
   sendCommand: (command) => ipcRenderer.send('execute-command', command),
   dropLastCommit: () => ipcRenderer.send('drop-last-commit'),
-  changeGitCommitName: (commitData) => ipcRenderer.invoke('change-git-commit-name', commitData),
   squashCommits: (numberToSquash: number, newCommitMessage) =>
-    ipcRenderer.send('squash-commits', numberToSquash, newCommitMessage),
+    ipcRenderer.invoke('squash-commits', numberToSquash, newCommitMessage),
 
   // Function to register a callback for receiving command output
   onCommandOutput: (callback) => {

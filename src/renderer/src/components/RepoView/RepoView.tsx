@@ -1,6 +1,11 @@
 import { Box, List, ListItem, ListItemText } from '@mui/material'
 import { eventManager } from '@renderer/class/EventManager'
-import { setSelectedGitCommitData, setSelectedGitCommitIndex } from '@renderer/class/LocalMemory'
+import {
+  CommitData,
+  getSelectedGitCommitData,
+  setSelectedGitCommitData,
+  setSelectedGitCommitIndex
+} from '@renderer/class/LocalMemory'
 import { JSX, useEffect, useRef, useState } from 'react'
 
 // Define a proper type for your repo items if you know it, otherwise keep it generic
@@ -15,6 +20,7 @@ export default function RepoView(): JSX.Element {
 
   const [selectedItemIndex, setSelectedItemIndex] = useState<number | null>(null)
   const [_repoData, setRepoData] = useState<RepoItem[]>([])
+  const repodataRef = useRef<RepoItem[]>(_repoData)
 
   const onItemClick = (index: number): void => {
     if (selectedItemIndex === index) return
@@ -40,16 +46,31 @@ export default function RepoView(): JSX.Element {
     })
   }
 
-  const refleshRepoUi = async (): Promise<void> => {
-    const repoData = await window.electron.handleGetRepoData()
+  const onUpdateMessageButtonClickHandler = async (): Promise<void> => {
+    try {
+      const commitData: CommitData = getSelectedGitCommitData()
+      console.log(commitData)
+    } catch (error) {
+      console.error('Error updating commit name:', error)
+    }
+  }
+  const onSquashCommitsButtonClickHandler = async (): Promise<void> => {
+    const squashData = await window.electron.ipcRenderer.invoke('get-squash-data-from-memory')
+    const newRepoData = repodataRef.current.splice(squashData.numberToSquash)
 
     setSelectedGitCommitIndex(0)
-    setSelectedGitCommitData(repoData[0])
-
-    setRepoData(repoData)
+    setSelectedGitCommitData(squashData.newCommitMessage)
+    newRepoData[0].commitName = squashData.newCommitMessage
+    setRepoData(newRepoData)
     setSelectedItemIndex(0)
+
+    eventManager.trigger('update-commit-index', 0)
+    eventManager.trigger('update-commit-window-text', squashData.newCommitMessage)
   }
 
+  useEffect(() => {
+    repodataRef.current = _repoData
+  }, [_repoData])
   useEffect(() => {
     if (isFirstRender.current) {
       window.electron.ipcRenderer
@@ -61,8 +82,8 @@ export default function RepoView(): JSX.Element {
     }
 
     eventManager.on('on-git-folder-open', onGitFolderOpenHandler)
-    eventManager.on('on-update-message-button-click', refleshRepoUi)
-    eventManager.on('on-squash-commits-button-click', refleshRepoUi)
+    eventManager.on('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+    eventManager.on('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
     const refreshRepoView = setInterval(async () => {
       const refreshedRepoData = await window.electron.handleGetRepoData()
       if (JSON.stringify(_repoData) !== JSON.stringify(refreshedRepoData)) {
@@ -72,8 +93,8 @@ export default function RepoView(): JSX.Element {
     return () => {
       clearInterval(refreshRepoView)
       eventManager.off('on-git-folder-open', onGitFolderOpenHandler)
-      eventManager.off('on-update-message-button-click', refleshRepoUi)
-      eventManager.off('on-squash-commits-button-click', refleshRepoUi)
+      eventManager.off('on-update-message-button-click', onUpdateMessageButtonClickHandler)
+      eventManager.off('on-squash-commits-button-click', onSquashCommitsButtonClickHandler)
     }
   }, [])
 

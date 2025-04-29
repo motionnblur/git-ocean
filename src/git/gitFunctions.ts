@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { memory } from '../classes/Memory'
+import { memory } from '../memory/Memory'
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const getGitCommitData = async (execPromise: any, folderPath: string): Promise<any[]> => {
@@ -31,32 +31,17 @@ export const changeGitCommitName = async (
 ): Promise<void> => {
   const currentDir = memory.currentGitDirectory
 
-  const rebaseTodoList = `
-edit ${commitHash}
-# other rebase actions can be added if necessary...
-`
-
   // Step 1: Start the git rebase process (but don't try to write the todo list yet)
   try {
-    await execPromise(
-      `git rebase -i ${commitHash}^`,
-      {
-        env: {
-          ...process.env,
-          GIT_SEQUENCE_EDITOR: `sed -i '1s/^pick /edit /'`
-        }
-      },
-      {
-        cwd: currentDir
+    await execPromise(`git rebase -i ${commitHash}^`, {
+      cwd: currentDir,
+      env: {
+        ...process.env,
+        GIT_SEQUENCE_EDITOR: `sed -i '1s/^pick /edit /'`
       }
-    )
+    })
 
-    const rebaseTodoPath = path.join(
-      memory.currentGitDirectory,
-      '.git',
-      'rebase-merge',
-      'git-rebase-todo'
-    )
+    const rebaseTodoPath = path.join(currentDir, '.git', 'rebase-merge', 'git-rebase-todo')
     const rebaseMergeDir = path.dirname(rebaseTodoPath)
 
     console.log('Rebase Todo Path:', rebaseTodoPath)
