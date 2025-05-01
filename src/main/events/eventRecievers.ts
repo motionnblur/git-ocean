@@ -1,13 +1,12 @@
 import { ipcMain } from 'electron'
-import { IRepoItem, ISquash, memory } from '../../memory/Memory'
+import { IRepoItem, ISquash, memory } from '../memory/Memory'
 import {
   changeGitCommitName,
   dropLastCommit,
   getGitCommitData,
   squashCommits
-} from '../../git/gitFunctions'
+} from '../git/gitFunctions'
 import * as pty from 'node-pty'
-import * as os from 'os'
 
 let ptyProcess: pty.IPty | null = null
 

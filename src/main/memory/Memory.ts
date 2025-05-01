@@ -1,4 +1,4 @@
-interface IRepoItem {
+export interface IRepoItem {
   commitData: string
   commitName: string
   authorData: string
